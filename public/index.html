@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DocPilot: Chat with your PDFs, with page citations</title>
+  <meta name="description" content="Upload PDFs and ask questions. DocPilot answers with page-level citations and clearly labelled web results when your documents don't have the answer.">
+  <meta name="theme-color" content="#0b1f3a">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DocPilot: Chat with your PDFs">
+  <meta property="og:description" content="Agentic PDF Q&amp;A with page citations, a built-in PDF viewer and a labelled web fallback.">
+  <meta property="og:image" content="/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="modulepreload" href="/js/app.js">
+</head>
+<body>
+  <a class="skip-link" href="#composer-input">Skip to the question box</a>
+
+  <div class="app" id="app">
+    <!-- ============================== Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Documents and settings">
+      <div class="brand">
+        <svg class="brand-logo" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <rect width="32" height="32" rx="8" fill="#2f6fed"/>
+          <path d="M10 7h8l5 5v13a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z" fill="#fff"/>
+          <path d="M18 7v5h5" fill="#c9d8fb"/>
+          <path d="M12.5 17.5h7M12.5 21h4.5" stroke="#2f6fed" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <div class="brand-name">DocPilot</div>
+          <div class="brand-sub">Chat with your PDFs</div>
+        </div>
+        <button class="icon-btn sidebar-close" id="sidebar-close" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+
+      <section class="side-section" aria-labelledby="upload-heading">
+        <h2 id="upload-heading" class="side-heading">Add documents</h2>
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-describedby="limits-text">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+          <div class="dropzone-title">Drop PDFs here or <span class="link-like">browse</span></div>
+          <div class="dropzone-sub">You can also paste a file</div>
+        </div>
+        <input type="file" id="file-input" accept="application/pdf,.pdf" multiple hidden>
+        <p class="limits" id="limits-text">Up to 10 PDFs · 50 MB · 1,000 pages each</p>
+      </section>
+
+      <section class="side-section docs-section" aria-labelledby="docs-heading">
+        <div class="side-heading-row">
+          <h2 id="docs-heading" class="side-heading">Documents</h2>
+          <span class="count-pill" id="doc-count" aria-label="0 documents">0</span>
+        </div>
+        <ul class="doc-list" id="doc-list"></ul>
+        <p class="docs-empty" id="docs-empty">No documents yet.</p>
+      </section>
+
+      <section class="side-section" aria-label="Settings">
+        <div class="toggle-row" id="web-toggle-row">
+          <label class="switch" for="web-toggle">
+            <input type="checkbox" id="web-toggle" role="switch">
+            <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+            <span class="switch-label">Search the web if PDFs don't have it</span>
+          </label>
+          <p class="toggle-hint" id="web-hint" hidden>Web search isn't configured on this server.</p>
+        </div>
+        <button type="button" class="btn btn-ghost-light btn-block" id="new-chat">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          New chat
+        </button>
+      </section>
+
+      <footer class="side-footer">
+        <p>LangGraph · Groq · Gemini · Supabase pgvector · Tavily</p>
+        <a href="https://github.com/NiKeT972/DocPilot" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="gh"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+          Source on GitHub
+        </a>
+      </footer>
+    </aside>
+    <div class="scrim" id="scrim" hidden></div>
+
+    <!-- ============================== Chat -->
+    <main class="main" id="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menu-btn" type="button" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <h1 class="topbar-title">Ask your documents</h1>
+        <div class="topbar-meta" id="topbar-meta"></div>
+      </header>
+
+      <div class="banners" id="banners"></div>
+
+      <section class="chat" id="chat" aria-label="Conversation">
+        <div class="messages" id="messages" role="log" aria-live="off"></div>
+      </section>
+
+      <form class="composer" id="composer" autocomplete="off">
+        <div class="composer-box">
+          <label for="composer-input" class="sr-only">Ask a question about your documents</label>
+          <textarea id="composer-input" rows="1" maxlength="2000" placeholder="Ask a question about your PDFs…" aria-describedby="composer-hint"></textarea>
+          <button type="submit" class="send-btn" id="send-btn" aria-label="Send question">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button type="button" class="stop-btn" id="stop-btn" aria-label="Stop generating" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
+            <span>Stop</span>
+          </button>
+        </div>
+        <p class="composer-hint" id="composer-hint">Enter to send · Shift+Enter for a new line</p>
+      </form>
+    </main>
+
+    <!-- ============================== PDF viewer -->
+    <aside class="viewer" id="viewer" aria-label="PDF viewer" hidden>
+      <div class="viewer-resize" id="viewer-resize" role="separator" aria-orientation="vertical" aria-label="Resize viewer" tabindex="0"></div>
+      <header class="viewer-head">
+        <div class="viewer-title" id="viewer-title">Document</div>
+        <div class="viewer-tools">
+          <button class="icon-btn" id="vw-prev" type="button" aria-label="Previous page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <label class="sr-only" for="vw-page">Page number</label>
+          <input id="vw-page" class="page-input" type="number" min="1" value="1" inputmode="numeric">
+          <span class="page-total" id="vw-total">/ 1</span>
+          <button class="icon-btn" id="vw-next" type="button" aria-label="Next page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+          <span class="tool-sep" aria-hidden="true"></span>
+          <button class="icon-btn" id="vw-zoom-out" type="button" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg></button>
+          <span class="zoom-label" id="vw-zoom" aria-live="polite">100%</span>
+          <button class="icon-btn" id="vw-zoom-in" type="button" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg></button>
+          <span class="tool-sep" aria-hidden="true"></span>
+          <button class="icon-btn" id="vw-close" type="button" aria-label="Close viewer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        </div>
+      </header>
+      <div class="viewer-body" id="viewer-body" tabindex="0" aria-label="PDF page">
+        <div class="viewer-msg" id="viewer-msg" hidden></div>
+        <div class="page-wrap" id="page-wrap">
+          <canvas id="page-canvas"></canvas>
+          <div class="textLayer" id="text-layer"></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="assertive" aria-atomic="false"></div>
+  <div class="sr-only" id="sr-status" aria-live="polite"></div>
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+
+  <dialog class="dialog" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+    <form method="dialog">
+      <h2 id="confirm-title">Are you sure?</h2>
+      <p id="confirm-body"></p>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn btn-secondary" type="submit">Cancel</button>
+        <button value="ok" class="btn btn-danger" type="submit" id="confirm-ok">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="empty-tpl">
+    <div class="empty" id="empty-state">
+      <h2 class="empty-title">Answers from your PDFs, with the page to prove it</h2>
+      <p class="empty-sub">Upload a report, paper or manual and ask anything. DocPilot searches your documents first, checks what it found, and only goes to the web when it has to.</p>
+      <ol class="flow" aria-label="How DocPilot answers">
+        <li class="flow-step"><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></span><span class="flow-name">Search PDFs</span><span class="flow-desc">Vector + keyword</span></li>
+        <li class="flow-step"><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4 4L19 7"/></svg></span><span class="flow-name">Grade</span><span class="flow-desc">Keep what's relevant</span></li>
+        <li class="flow-step"><span class="flow-icon flow-icon-web"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/></svg></span><span class="flow-name">Web if needed</span><span class="flow-desc">Clearly labelled</span></li>
+        <li class="flow-step"><span class="flow-icon flow-icon-pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h7l4 4v12H7z"/><path d="M10 13h5M10 16h3"/></svg></span><span class="flow-name">Cited answer</span><span class="flow-desc">Click to see the page</span></li>
+      </ol>
+      <div class="suggestions" id="suggestions" role="group" aria-label="Suggested questions"></div>
+    </div>
+  </template>
+
+  <noscript><p class="noscript">DocPilot needs JavaScript to read your PDFs in the browser.</p></noscript>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
