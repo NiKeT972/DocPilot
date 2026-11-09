@@ -6,6 +6,7 @@ Static files in `public/` are served by Vercel's CDN; locally we mount them here
 
 from __future__ import annotations
 
+import hmac
 import json
 import time
 import uuid
@@ -13,7 +14,7 @@ from collections.abc import AsyncIterator
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, File, Form, Query, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -23,10 +24,12 @@ from docpilot import __version__
 from docpilot.config import get_settings
 from docpilot.graph import run_chat
 from docpilot.httpx_retry import UpstreamError
+from docpilot.ingest import BatchPage, IngestError, ingest_batch, ingest_pdf_bytes, suggest_questions
 from docpilot.logs import error as log_error
 from docpilot.logs import event as log_event
 from docpilot.logs import request_id_var
-from docpilot.ratelimit import HOUR, RateLimited
+from docpilot.ocr import InvalidImage, decode_image
+from docpilot.ratelimit import DAY, HOUR, RateLimited
 from docpilot.services import get_services
 
 SESSION_RE = r"^[A-Za-z0-9-]{8,64}$"
@@ -37,6 +40,14 @@ PUBLIC_DIR = Path(__file__).parent / "public"
 get_settings().validate()
 
 app = FastAPI(title="DocPilot", version=__version__, docs_url="/api/docs", openapi_url="/api/openapi.json")
+
+_s = get_settings()
+BODY_LIMITS = {
+    "/api/ingest": _s.max_batch_bytes + 256_000,
+    "/api/ocr": 3_000_000,
+    "/api/upload": _s.max_upload_mb * 1024 * 1024 + 64_000,
+    "/api/chat": 64_000,
+}
 
 SessionId = Annotated[str, Query(pattern=SESSION_RE)]
 
@@ -54,6 +65,18 @@ async def request_context(request: Request, call_next):
     rid = request.headers.get("x-vercel-id", "")[:64] or uuid.uuid4().hex[:16]
     token = request_id_var.set(rid)
     t0 = time.perf_counter()
+    limit = BODY_LIMITS.get(request.url.path)
+    if limit and request.method == "POST":
+        try:
+            length = int(request.headers.get("content-length") or 0)
+        except ValueError:
+            length = 0
+        if length > limit:
+            request_id_var.reset(token)
+            return JSONResponse(
+                {"error": "Request is too large. Batches must be under 2.5 MB.", "code": "payload_too_large"},
+                status_code=413,
+            )
     try:
         response = await call_next(request)
         response.headers["x-request-id"] = rid
@@ -283,6 +306,150 @@ async def chat(req: ChatRequest, request: Request):
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"},
     )
+
+
+# ------------------------------------------------------------------ ingestion
+class IngestPage(BaseModel):
+    page: int = Field(ge=1, le=100_000)
+    text: str = Field(default="", max_length=60_000)
+    ocr: bool = False
+
+
+class IngestRequest(BaseModel):
+    session_id: str = Field(pattern=SESSION_RE)
+    doc_id: str | None = Field(default=None, pattern=UUIDISH_RE)
+    doc_name: str = Field(min_length=1, max_length=200)
+    sha256: str = Field(pattern=r"^[a-fA-F0-9]{64}$")
+    size_bytes: int = Field(ge=1)
+    total_pages: int = Field(ge=1)
+    pages: list[IngestPage] = Field(max_length=200)
+    first_batch: bool = False
+    last_batch: bool = False
+
+    @field_validator("doc_name")
+    @classmethod
+    def _clean_name(cls, v: str) -> str:
+        v = "".join(ch for ch in v if ch.isprintable()).strip().replace("/", "_").replace("\\", "_")
+        if not v:
+            raise ValueError("doc_name is empty")
+        return v
+
+
+@app.exception_handler(IngestError)
+async def _ingest_error(_: Request, exc: IngestError):
+    return JSONResponse({"error": exc.message, "code": exc.code}, status_code=exc.status)
+
+
+def require_embedder():
+    svc = get_services()
+    if svc.embedder is None:
+        raise ApiError(503, "Server not configured: missing GEMINI_API_KEY.")
+    return svc
+
+
+@app.post("/api/ingest")
+async def ingest(req: IngestRequest, request: Request):
+    svc = require_embedder()
+    s = svc.settings
+    await svc.limiter.hit(
+        request,
+        "ingest",
+        s.rate_ingest_per_day,
+        DAY,
+        session_id=req.session_id,
+        friendly="You've hit today's upload limit for this demo. Please try again tomorrow.",
+    )
+    result = await ingest_batch(
+        svc.store,
+        svc.embedder,
+        s,
+        session_id=req.session_id,
+        doc_id=req.doc_id,
+        doc_name=req.doc_name,
+        sha256=req.sha256.lower(),
+        size_bytes=req.size_bytes,
+        total_pages=req.total_pages,
+        pages=[BatchPage(p.page, p.text, p.ocr) for p in req.pages],
+        first_batch=req.first_batch,
+    )
+    log_event(
+        "ingest",
+        session=req.session_id[:8],
+        doc=result.doc.id[:8],
+        pages=len(req.pages),
+        chunks=result.batch_chunks,
+        first=req.first_batch,
+        last=req.last_batch,
+    )
+    return result.to_dict(req.last_batch)
+
+
+class OcrRequest(BaseModel):
+    session_id: str = Field(pattern=SESSION_RE)
+    image_base64: str = Field(min_length=100, max_length=2_800_000)
+
+
+@app.post("/api/ocr")
+async def ocr(req: OcrRequest, request: Request):
+    svc = get_services()
+    if svc.ocr is None:
+        raise ApiError(503, "OCR is not configured on this server.")
+    try:
+        image, mime = decode_image(req.image_base64)
+    except InvalidImage as exc:
+        raise ApiError(422, str(exc)) from exc
+    await svc.limiter.hit(
+        request,
+        "ocr",
+        svc.settings.rate_ocr_per_day,
+        DAY,
+        session_id=req.session_id,
+        friendly=f"OCR is limited to {svc.settings.rate_ocr_per_day} scanned pages per day in this demo.",
+    )
+    text = await svc.ocr.transcribe(image, mime)
+    return {"text": text[:60_000]}
+
+
+@app.post("/api/upload")
+async def upload(request: Request, session_id: str = Form(pattern=SESSION_RE), file: UploadFile = File(...)):
+    svc = require_embedder()
+    s = svc.settings
+    limit = s.max_upload_mb * 1024 * 1024
+    data = await file.read(limit + 1)
+    if len(data) > limit:
+        raise ApiError(
+            413, f"Direct uploads are limited to {s.max_upload_mb} MB. Use the web app for larger files."
+        )
+    if not data.startswith(b"%PDF"):
+        raise ApiError(415, "Only PDF files are supported.")
+    await svc.limiter.hit(request, "ingest", s.rate_ingest_per_day, DAY, session_id=session_id)
+    name = "".join(ch for ch in (file.filename or "document.pdf") if ch.isprintable())[:200] or "document.pdf"
+    return await ingest_pdf_bytes(svc.store, svc.embedder, s, session_id=session_id, name=name, data=data)
+
+
+class SuggestRequest(BaseModel):
+    session_id: str = Field(pattern=SESSION_RE)
+    doc_id: str | None = Field(default=None, pattern=UUIDISH_RE)
+
+
+@app.post("/api/suggest")
+async def suggest(req: SuggestRequest):
+    svc = get_services()
+    return await suggest_questions(svc.store, svc.fast_llm, req.session_id, req.doc_id)
+
+
+# ------------------------------------------------------------------ cron
+@app.api_route("/api/cron/cleanup", methods=["GET", "POST"])
+async def cron_cleanup(request: Request):
+    """Vercel Cron calls this daily with `Authorization: Bearer $CRON_SECRET`."""
+    svc = get_services()
+    secret = svc.settings.cron_secret
+    auth = request.headers.get("authorization", "")
+    if not secret or not hmac.compare_digest(auth, f"Bearer {secret}"):
+        raise ApiError(401, "Unauthorized.")
+    result = await svc.store.cleanup(svc.settings.retention_days)
+    log_event("cron_cleanup", **{k: v for k, v in (result or {}).items() if isinstance(v, int)})
+    return {"ok": True, "deleted": result}
 
 
 # ------------------------------------------------------------------ static (local dev)
