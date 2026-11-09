@@ -53,6 +53,7 @@ async def post_json(
     retries: int = 4,
     base_delay: float = 1.0,
     max_delay: float = 20.0,
+    min_429_delay: float = 0.0,
     service: str = "upstream",
 ) -> dict:
     last_status: int | None = None
@@ -71,6 +72,9 @@ async def post_json(
             delay = _retry_after(resp)
             if delay is None:
                 delay = base_delay * 2**attempt + random.uniform(0, 0.25)
+            if resp.status_code == 429:
+                # Per-minute quotas: short server hints tend to land in the same window; back off harder.
+                delay = max(delay, min_429_delay * 2**attempt)
             await asyncio.sleep(min(max_delay, delay + random.uniform(0, 0.5)))
             continue
         raise UpstreamError(_error_message(service, resp), resp.status_code)

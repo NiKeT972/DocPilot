@@ -71,3 +71,23 @@ async def test_post_json_gives_up_on_400_and_daily_quota(monkeypatch):
         with pytest.raises(UpstreamError) as e:
             await post_json(c, "https://x.test", json={}, service="Svc")
     assert e.value.status == 429 and seen["n"] == 1
+
+
+async def test_429_backoff_has_floor(monkeypatch):
+    sleeps = []
+
+    async def fake_sleep(s):
+        sleeps.append(s)
+
+    monkeypatch.setattr("docpilot.httpx_retry.asyncio.sleep", fake_sleep)
+    n = {"c": 0}
+
+    def handler(request):
+        n["c"] += 1
+        return (
+            httpx.Response(429, headers={"retry-after": "1"}) if n["c"] < 3 else httpx.Response(200, json={})
+        )
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as c:
+        await post_json(c, "https://x.test", json={}, min_429_delay=10, max_delay=65)
+    assert sleeps[0] >= 10 and sleeps[1] >= 20
