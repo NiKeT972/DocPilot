@@ -127,6 +127,9 @@ async def _rate_limited(_: Request, exc: RateLimited):
 @app.exception_handler(UpstreamError)
 async def _upstream(_: Request, exc: UpstreamError):
     log_error("upstream error", exc_info=False, detail=str(exc), status=exc.status)
+    if exc.status == 429:
+        # An upstream quota (e.g. Gemini free tier), not our own per-IP limit.
+        return JSONResponse({"error": str(exc), "code": "upstream_quota"}, status_code=429)
     return JSONResponse({"error": str(exc)}, status_code=502)
 
 

@@ -210,3 +210,24 @@ def test_requirements_match_pyproject():
     ]
     deps = tomllib.loads((root / "pyproject.toml").read_text())["project"]["dependencies"]
     assert sorted(reqs) == sorted(deps)
+
+
+async def test_upstream_quota_maps_to_429(client, services):
+    from docpilot.httpx_retry import UpstreamError
+
+    async def quota(*a, **k):
+        raise UpstreamError("The embedding quota for the Gemini API key is used up for now.", 429)
+
+    services.embedder.embed_documents = quota
+    body = {
+        "session_id": SESSION,
+        "doc_name": "a.pdf",
+        "sha256": "a" * 64,
+        "size_bytes": 10,
+        "total_pages": 1,
+        "pages": [{"page": 1, "text": "Some page text that is long enough to keep."}],
+        "first_batch": True,
+        "last_batch": True,
+    }
+    r = client.post("/api/ingest", json=body)
+    assert r.status_code == 429 and r.json()["code"] == "upstream_quota"

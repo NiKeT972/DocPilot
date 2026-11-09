@@ -67,3 +67,12 @@ async def test_delete_doc_requires_matching_session():
     d1 = await add_doc(svc, SESSION, "a.pdf", ["Alpha beta gamma delta epsilon."])
     assert not await svc.store.delete_doc("someone-else-123", d1.id)
     assert await svc.store.get_doc(SESSION, d1.id)
+
+
+def test_supabase_headers_for_new_and_legacy_keys():
+    from docpilot.store import SupabaseStore
+
+    new = SupabaseStore("https://x.supabase.co", "sb_secret_abc").headers
+    assert new["apikey"] == "sb_secret_abc" and "Authorization" not in new
+    legacy = SupabaseStore("https://x.supabase.co/", "eyJhbGciOi.legacy").headers
+    assert legacy["Authorization"] == "Bearer eyJhbGciOi.legacy"

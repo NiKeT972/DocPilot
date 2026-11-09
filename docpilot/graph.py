@@ -217,11 +217,23 @@ def route_after_grade(state: AgentState) -> str:
 # ------------------------------------------------------------------ citations
 _TAG_GROUP = re.compile(r"\[((?:\s*[PW]\d{1,2}\s*[,;]?\s*)+)\]")
 _SINGLE = re.compile(r"[PW]\d{1,2}")
+# Models sometimes use their native citation style, e.g. gpt-oss writes 【P3】 or 【P3†L5-L9】.
+_ALT_TAG = re.compile(r"[【［〔(]\s*((?:[PW]\d{1,2}(?:†[^】］〕)\]]*)?\s*[,;]?\s*)+)[】］〕)]")
+
+
+def normalize_citations(text: str) -> str:
+    """Rewrite alternative citation brackets to the canonical [P1] form."""
+
+    def repl(m: re.Match) -> str:
+        return "".join(f"[{t}]" for t in _SINGLE.findall(re.sub(r"†[^,;]*", "", m.group(1))))
+
+    return _ALT_TAG.sub(repl, text)
 
 
 def ground_citations(answer: str, valid: set[str]) -> tuple[str, list[str]]:
     """Split grouped tags ([P1, W2] -> [P1][W2]), drop tags that don't exist, return (text, cited in order)."""
     cited: list[str] = []
+    answer = normalize_citations(answer)
 
     def repl(m: re.Match) -> str:
         tags = _SINGLE.findall(m.group(1))
@@ -409,8 +421,8 @@ ANSWER_PROMPT = f"""You are DocPilot, an assistant that answers questions about 
 
 Rules:
 - Answer ONLY from the provided context blocks. Do not use outside knowledge.
-- Cite every factual sentence with the id of its source in square brackets, e.g. [P1] or [W2]. \
-Use only ids that appear in the context. Put citations right after the claim.
+- Cite every factual sentence with the id of its source in plain ASCII square brackets, exactly like \
+[P1] or [W2] (not 【P1】). Use only ids that appear in the context. Put citations right after the claim.
 - Prefer PDF sources ([P#]). Use web sources ([W#]) only for what the PDFs don't cover, and when you \
 do, say so in one short phrase (e.g. "According to web sources, …").
 - If the context doesn't contain the answer, say so plainly and don't guess.
