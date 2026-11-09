@@ -8,6 +8,7 @@ from .config import Settings, get_settings
 from .embeddings import Embedder, GeminiEmbedder
 from .graph import Deps
 from .llm import LLM, GroqLLM
+from .ocr import GeminiOCR
 from .ratelimit import RateLimiter
 from .store import Store, make_store
 from .web import TavilySearch, WebSearch
@@ -22,6 +23,7 @@ class Services:
     answer_llm: LLM | None
     web: WebSearch | None
     limiter: RateLimiter
+    ocr: GeminiOCR | None = None
 
     def deps(self) -> Deps:
         return Deps(
@@ -46,6 +48,7 @@ def build_services(settings: Settings | None = None) -> Services:
         answer_llm=GroqLLM(s.groq_api_key, s.answer_model, temperature=0.2) if s.groq_api_key else None,
         web=TavilySearch(s.tavily_api_key) if s.tavily_api_key else None,
         limiter=RateLimiter(store, s.ip_hash_salt),
+        ocr=GeminiOCR(s.gemini_api_key, s.ocr_model) if s.gemini_api_key else None,
     )
 
 
