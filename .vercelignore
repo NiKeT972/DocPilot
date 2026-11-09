@@ -1,0 +1,13 @@
+.venv
+.env
+.env.*
+tests
+e2e
+eval
+scripts
+*.md
+!README.md
+.github
+.ruff_cache
+.pytest_cache
+requirements-dev.txt

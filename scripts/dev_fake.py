@@ -73,14 +73,21 @@ web = FakeWeb(
         ),
     ]
 )
-set_services(
-    make_services(
-        settings=settings_for_tests(rate_chat_per_hour=1000),
-        fast=FakeFastLLM(grade=grade, rewrite="latest news on the topic"),
-        answer=FakeAnswerLLM(answer),
-        web=web,
-    )
+
+
+class FakeOCR:
+    async def transcribe(self, image: bytes, mime: str = "image/jpeg") -> str:
+        return f"[OCR] Scanned page transcribed by the fake OCR ({len(image)} bytes). The scanned code is SCAN-42."
+
+
+svc = make_services(
+    settings=settings_for_tests(rate_chat_per_hour=1000),
+    fast=FakeFastLLM(grade=grade, rewrite="latest news on the topic"),
+    answer=FakeAnswerLLM(answer),
+    web=web,
 )
+svc.ocr = FakeOCR()
+set_services(svc)
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=int(os.getenv("PORT", "8000")), log_level="warning")

@@ -189,3 +189,24 @@ def test_vercel_without_supabase_fails_loudly():
     with pytest.raises(ConfigError, match="Supabase"):
         Settings(on_vercel=True).validate()
     Settings(on_vercel=False).validate()  # local dev is fine with the in-memory store
+
+
+def test_security_headers_and_static(client):
+    r = client.get("/api/health")
+    assert "frame-ancestors 'none'" in r.headers["content-security-policy"]
+    assert r.headers["x-content-type-options"] == "nosniff"
+    assert r.headers["x-request-id"]
+
+
+def test_requirements_match_pyproject():
+    import tomllib
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    reqs = [
+        line.strip()
+        for line in (root / "requirements.txt").read_text().splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+    deps = tomllib.loads((root / "pyproject.toml").read_text())["project"]["dependencies"]
+    assert sorted(reqs) == sorted(deps)
