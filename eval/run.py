@@ -119,6 +119,7 @@ async def run(args: argparse.Namespace) -> int:
         print(
             f"indexed {name}: {body['pages']} pages, {body['chunks']} chunks in {time.perf_counter() - t0:.1f}s"
         )
+        await asyncio.sleep(args.upload_pause)  # let per-minute embedding quotas reset
 
     # 2) Ask
     runs = [(q, q["allow_web"], q["expected_route"]) for q in questions]
