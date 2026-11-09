@@ -349,11 +349,11 @@ class SupabaseStore:
 
     def __init__(self, url: str, service_key: str, timeout: float = 30):
         self.base = f"{url.rstrip('/')}/rest/v1"
-        self.headers = {
-            "apikey": service_key,
-            "Authorization": f"Bearer {service_key}",
-            "Content-Type": "application/json",
-        }
+        # New secret keys (sb_secret_...) go on the `apikey` header only; legacy service_role
+        # JWTs (eyJ...) are also sent as a Bearer token.
+        self.headers = {"apikey": service_key, "Content-Type": "application/json"}
+        if service_key.startswith("eyJ"):
+            self.headers["Authorization"] = f"Bearer {service_key}"
         self.timeout = timeout
 
     async def _req(self, method: str, path: str, *, params=None, json=None, prefer: str | None = None):

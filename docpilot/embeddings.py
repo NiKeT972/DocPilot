@@ -15,6 +15,8 @@ from .httpx_retry import UpstreamError, post_json
 
 GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta"
 BATCH_SIZE = 100
+# Keep each call well under per-minute token budgets (~4 chars/token).
+MAX_BATCH_CHARS = 60_000
 
 
 class Embedder(Protocol):
@@ -30,6 +32,23 @@ def l2_normalize(vec: list[float]) -> list[float]:
     if norm == 0:
         return vec
     return [v / norm for v in vec]
+
+
+def _batches(texts: list[str]) -> list[list[str]]:
+    """Split into calls of <= BATCH_SIZE texts and <= MAX_BATCH_CHARS characters."""
+    groups: list[list[str]] = []
+    cur: list[str] = []
+    size = 0
+    for t in texts:
+        n = min(len(t), 8000)
+        if cur and (len(cur) >= BATCH_SIZE or size + n > MAX_BATCH_CHARS):
+            groups.append(cur)
+            cur, size = [], 0
+        cur.append(t)
+        size += n
+    if cur:
+        groups.append(cur)
+    return groups
 
 
 class GeminiEmbedder:
@@ -55,13 +74,24 @@ class GeminiEmbedder:
                 for t in texts
             ]
         }
-        data = await post_json(
-            client,
-            f"{GEMINI_BASE}/models/{self.model}:batchEmbedContents",
-            json=body,
-            headers={"x-goog-api-key": self.api_key},
-            service="Gemini embeddings",
-        )
+        try:
+            data = await post_json(
+                client,
+                f"{GEMINI_BASE}/models/{self.model}:batchEmbedContents",
+                json=body,
+                headers={"x-goog-api-key": self.api_key},
+                retries=4,  # 4 x <=65 s stays inside Vercel's 300 s limit
+                max_delay=65,  # free-tier per-minute quotas ask us to wait up to a minute
+                service="Gemini embeddings",
+            )
+        except UpstreamError as exc:
+            if exc.status == 429:
+                raise UpstreamError(
+                    "The embedding quota for the Gemini API key is used up for now. "
+                    "Please try again later (free-tier keys have small per-minute and per-day limits).",
+                    429,
+                ) from exc
+            raise
         embs = data.get("embeddings") or []
         if len(embs) != len(texts):
             raise UpstreamError("Gemini embeddings returned an unexpected number of vectors.")
@@ -70,8 +100,8 @@ class GeminiEmbedder:
     async def _embed(self, texts: list[str], task: str) -> list[list[float]]:
         out: list[list[float]] = []
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            for i in range(0, len(texts), BATCH_SIZE):
-                out.extend(await self._batch(client, texts[i : i + BATCH_SIZE], task))
+            for group in _batches(texts):
+                out.extend(await self._batch(client, group, task))
         return out
 
     async def embed_documents(self, texts: list[str]) -> list[list[float]]:

@@ -115,7 +115,7 @@ def load_settings() -> Settings:
         gemini_api_key=_str("GEMINI_API_KEY"),
         tavily_api_key=_str("TAVILY_API_KEY"),
         supabase_url=_str("SUPABASE_URL").rstrip("/"),
-        supabase_service_key=_str("SUPABASE_SERVICE_KEY"),
+        supabase_service_key=_str("SUPABASE_SERVICE_KEY") or _str("SUPABASE_SECRET_KEY"),
         answer_model=_str("ANSWER_MODEL", "openai/gpt-oss-120b"),
         fast_model=_str("FAST_MODEL", "openai/gpt-oss-20b"),
         embed_model=_str("EMBED_MODEL", "gemini-embedding-001"),

@@ -19,13 +19,29 @@ class UpstreamError(RuntimeError):
 
 
 def _retry_after(resp: httpx.Response) -> float | None:
+    """Delay requested by the server: `Retry-After` header, or Google's RetryInfo.retryDelay ("37s")."""
     raw = resp.headers.get("retry-after")
-    if not raw:
-        return None
+    if raw:
+        try:
+            return max(0.0, float(raw))
+        except ValueError:
+            pass
     try:
-        return max(0.0, float(raw))
-    except ValueError:
+        body = resp.json()
+        details = body.get("error", {}).get("details", []) if isinstance(body, dict) else []
+        for d in details:
+            if isinstance(d, dict) and str(d.get("@type", "")).endswith("RetryInfo"):
+                delay = str(d.get("retryDelay", "")).rstrip("s")
+                return max(0.0, float(delay)) if delay else None
+    except (ValueError, AttributeError):
         return None
+    return None
+
+
+def is_daily_quota(resp: httpx.Response) -> bool:
+    """Google 429s that mention a per-day quota won't clear by waiting a minute."""
+    text = resp.text.lower()
+    return resp.status_code == 429 and any(k in text for k in ("per day", "perday", "per_day", "_rpd"))
 
 
 async def post_json(
@@ -51,11 +67,11 @@ async def post_json(
         if resp.status_code < 400:
             return resp.json()
         last_status = resp.status_code
-        if resp.status_code in RETRY_STATUS and attempt < retries:
+        if resp.status_code in RETRY_STATUS and attempt < retries and not is_daily_quota(resp):
             delay = _retry_after(resp)
             if delay is None:
                 delay = base_delay * 2**attempt + random.uniform(0, 0.25)
-            await asyncio.sleep(min(max_delay, delay))
+            await asyncio.sleep(min(max_delay, delay + random.uniform(0, 0.5)))
             continue
         raise UpstreamError(_error_message(service, resp), resp.status_code)
     raise UpstreamError(f"{service} failed after retries.", last_status)
