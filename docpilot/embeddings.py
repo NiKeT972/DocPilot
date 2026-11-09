@@ -82,6 +82,7 @@ class GeminiEmbedder:
                 headers={"x-goog-api-key": self.api_key},
                 retries=4,  # 4 x <=65 s stays inside Vercel's 300 s limit
                 max_delay=65,  # free-tier per-minute quotas ask us to wait up to a minute
+                min_429_delay=10,  # 10, 20, 40, 60 s: ~130 s worst case
                 service="Gemini embeddings",
             )
         except UpstreamError as exc:
