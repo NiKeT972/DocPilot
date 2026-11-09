@@ -18,6 +18,8 @@ export async function openPdf(data) {
     cMapUrl: "/vendor/pdfjs/cmaps/",
     cMapPacked: true,
     standardFontDataUrl: "/vendor/pdfjs/standard_fonts/",
+    wasmUrl: "/vendor/pdfjs/wasm/",
+    iccUrl: "/vendor/pdfjs/iccs/",
     isEvalSupported: false,
     enableXfa: false,
   });

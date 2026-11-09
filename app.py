@@ -39,7 +39,22 @@ PUBLIC_DIR = Path(__file__).parent / "public"
 # Fail loudly at startup on unsafe configs (e.g. Vercel without Supabase).
 get_settings().validate()
 
-app = FastAPI(title="DocPilot", version=__version__, docs_url="/api/docs", openapi_url="/api/openapi.json")
+app = FastAPI(
+    title="DocPilot", version=__version__, docs_url=None, redoc_url=None, openapi_url="/api/openapi.json"
+)
+
+# Same policy as vercel.json (which also covers CDN-served static files in production).
+SECURITY_HEADERS = {
+    "Content-Security-Policy": (
+        "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: blob: https://icons.duckduckgo.com; font-src 'self' data:; connect-src 'self'; "
+        "worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    ),
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "X-Frame-Options": "DENY",
+}
 
 _s = get_settings()
 BODY_LIMITS = {
@@ -80,6 +95,8 @@ async def request_context(request: Request, call_next):
     try:
         response = await call_next(request)
         response.headers["x-request-id"] = rid
+        for key, value in SECURITY_HEADERS.items():
+            response.headers.setdefault(key, value)
         if request.url.path.startswith("/api/"):
             log_event(
                 "request",
