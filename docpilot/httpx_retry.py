@@ -39,9 +39,30 @@ def _retry_after(resp: httpx.Response) -> float | None:
 
 
 def is_daily_quota(resp: httpx.Response) -> bool:
-    """Google 429s that mention a per-day quota won't clear by waiting a minute."""
+    """True only when every violated Google quota is a per-day one (waiting a minute won't help).
+
+    Google lists the violated quotas in `error.details[QuotaFailure].violations[].quotaId`, e.g.
+    "EmbedContentRequestsPerMinutePerProjectPerModel-FreeTier". Free-text messages mention several
+    quotas, so they're only used when no structured details are present.
+    """
+    if resp.status_code != 429:
+        return False
+    try:
+        body = resp.json()
+        details = body.get("error", {}).get("details", []) if isinstance(body, dict) else []
+    except ValueError:
+        details = []
+    ids = [
+        str(v.get("quotaId") or v.get("quotaMetric") or "")
+        for d in details
+        if isinstance(d, dict)
+        for v in d.get("violations", []) or []
+        if isinstance(v, dict)
+    ]
+    if ids:
+        return all("perday" in i.lower().replace("_", "") for i in ids)
     text = resp.text.lower()
-    return resp.status_code == 429 and any(k in text for k in ("per day", "perday", "per_day", "_rpd"))
+    return ("per day" in text or "perday" in text) and "minute" not in text
 
 
 async def post_json(

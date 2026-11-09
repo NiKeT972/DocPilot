@@ -32,8 +32,28 @@ def test_retry_after_header_and_google_retry_info():
 
 
 def test_daily_quota_detection():
-    assert is_daily_quota(httpx.Response(429, text="Quota exceeded for metric: ...requests_per_day"))
-    assert not is_daily_quota(httpx.Response(429, text="per minute"))
+    def quota(*ids):
+        return httpx.Response(
+            429,
+            json={
+                "error": {
+                    "message": "Quota exceeded ... PerDay ... PerMinute",
+                    "details": [
+                        {
+                            "@type": "type.googleapis.com/google.rpc.QuotaFailure",
+                            "violations": [{"quotaId": i} for i in ids],
+                        }
+                    ],
+                }
+            },
+        )
+
+    assert is_daily_quota(quota("EmbedContentRequestsPerDayPerProjectPerModel-FreeTier"))
+    assert not is_daily_quota(quota("EmbedContentRequestsPerMinutePerProjectPerModel-FreeTier"))
+    assert not is_daily_quota(quota("RequestsPerMinute", "RequestsPerDay"))
+    assert is_daily_quota(httpx.Response(429, text="Quota exceeded: requests per day"))
+    assert not is_daily_quota(httpx.Response(429, text="per minute; see per day limits"))
+    assert not is_daily_quota(httpx.Response(500, text="per day"))
 
 
 async def test_post_json_retries_then_succeeds(monkeypatch):
