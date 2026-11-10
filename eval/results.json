@@ -1,47 +1,44 @@
 {
   "summary": {
     "n": 36,
-    "routing_accuracy": 0.8333333333333334,
-    "answer_correctness": 0.8888888888888888,
-    "citation_page_accuracy": 1.0,
-    "pdf_questions_with_pdf_citation": 22,
+    "routing_accuracy": 0.8888888888888888,
+    "answer_correctness": 0.9166666666666666,
+    "citation_page_accuracy": 0.9583333333333334,
+    "pdf_questions_with_pdf_citation": 24,
     "pdf_questions": 24,
-    "p50_s": 8.196,
-    "p95_s": 12.30475,
+    "p50_s": 7.1335,
+    "p95_s": 10.4235,
     "by_category": {
       "pdf": {
         "n": 18,
-        "routing": 0.9444444444444444,
+        "routing": 1.0,
         "correct": 0.9444444444444444,
-        "p50_s": 6.975
+        "p50_s": 5.1815
       },
       "hybrid": {
         "n": 6,
         "routing": 0.3333333333333333,
         "correct": 0.6666666666666666,
-        "p50_s": 9.1505
+        "p50_s": 8.626
       },
       "web": {
         "n": 6,
-        "routing": 0.8333333333333334,
-        "correct": 0.8333333333333334,
-        "p50_s": 8.5185
+        "routing": 1.0,
+        "correct": 1.0,
+        "p50_s": 7.3525
       },
       "web-off": {
         "n": 6,
         "routing": 1.0,
         "correct": 1.0,
-        "p50_s": 8.326
+        "p50_s": 7.2095
       }
     },
     "confusion": {
-      "pdf->pdf": 17,
-      "pdf->none": 1,
+      "pdf->pdf": 18,
       "hybrid->hybrid": 2,
-      "hybrid->pdf": 3,
-      "hybrid->none": 1,
-      "web->web": 5,
-      "web->error": 1,
+      "hybrid->pdf": 4,
+      "web->web": 6,
       "none->none": 6
     }
   },
@@ -65,8 +62,8 @@
         1
       ],
       "page_hit": true,
-      "latency_ms": 3951,
-      "server_ms": 2740,
+      "latency_ms": 5350,
+      "server_ms": 4239,
       "answer": "The Transformer achieves a **BLEU score of 28.4** on the WMT 2014 English‑to‑German translation task[P1][P3].",
       "sources": [
         {
@@ -105,8 +102,8 @@
         1
       ],
       "page_hit": true,
-      "latency_ms": 2993,
-      "server_ms": 2546,
+      "latency_ms": 3040,
+      "server_ms": 2374,
       "answer": "The Transformer achieved a **BLEU score of 41.8** on the WMT 2014 English‑to‑French translation task, after **training for 3.5 days on eight GPUs**[P1].",
       "sources": [
         {
@@ -136,8 +133,8 @@
         3
       ],
       "page_hit": true,
-      "latency_ms": 2482,
-      "server_ms": 1995,
+      "latency_ms": 2722,
+      "server_ms": 2205,
       "answer": "The Transformer's encoder stack consists of **6 identical layers**[P1].",
       "sources": [
         {
@@ -159,23 +156,32 @@
       "route": "pdf",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "System answer correctly provides d_model = 512 as required",
+      "judge_reason": "Includes the required d_model=512 as specified",
       "gold_pages": [
         3
       ],
       "cited_pages": [
-        3
+        5,
+        9
       ],
-      "page_hit": true,
-      "latency_ms": 3092,
-      "server_ms": 2625,
-      "answer": "The base Transformer uses an output dimension **d model = 512** for all sub‑layers and for the embedding layers[P2].",
+      "page_hit": false,
+      "latency_ms": 3686,
+      "server_ms": 3185,
+      "answer": "The base Transformer uses a model dimension of **d model = 512** for its sub‑layers and embeddings[P1][P4]",
       "sources": [
         {
-          "tag": "P2",
+          "tag": "P1",
           "type": "pdf",
           "doc_name": "attention.pdf",
-          "page": 3,
+          "page": 5,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "P4",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 9,
           "title": null,
           "url": null
         }
@@ -198,8 +204,8 @@
         5
       ],
       "page_hit": true,
-      "latency_ms": 3393,
-      "server_ms": 2916,
+      "latency_ms": 3153,
+      "server_ms": 2444,
       "answer": "The base Transformer uses **8 parallel attention heads** [P1].",
       "sources": [
         {
@@ -218,19 +224,30 @@
       "question": "Why are the dot products scaled by 1/sqrt(d_k) in scaled dot-product attention?",
       "allow_web": true,
       "expected_route": "pdf",
-      "route": "none",
-      "route_ok": false,
+      "route": "pdf",
+      "route_ok": true,
       "correct": 1,
-      "judge_reason": "Matches expected answer, includes all key facts",
+      "judge_reason": "Matches expected answer key points",
       "gold_pages": [
         4
       ],
-      "cited_pages": [],
-      "page_hit": null,
-      "latency_ms": 4762,
-      "server_ms": 3923,
-      "answer": "The dot products can become very large when the dimensionality \\(d_k\\) is large, because each component of the query and key contributes to the sum and the variance of the dot product grows with \\(d_k\\) [​P1]. \nIf the raw dot products are fed directly into the softmax, the large magnitudes push the softmax into regions with extremely small gradients, making training difficult. \nScaling the dot products by \\(1/\\sqrt{d_k}\\) reduces their magnitude to a more stable range, keeping the softmax gradients well‑behaved and improving learning stability [​P1][​P2][​P3].",
-      "sources": []
+      "cited_pages": [
+        4
+      ],
+      "page_hit": true,
+      "latency_ms": 2790,
+      "server_ms": 2316,
+      "answer": "The dot products are scaled by \\(1/\\sqrt{d_k}\\) to keep their magnitude from becoming too large when the dimensionality \\(d_k\\) is high. Without scaling, the variance of the dot product grows with \\(d_k\\) (≈\\(d_k\\)), which can push the softmax into regions with extremely small gradients and hurt learning. Dividing by \\(\\sqrt{d_k}\\) normalizes the values, preventing this problem and allowing the softmax to operate in a stable range[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 4,
+          "title": null,
+          "url": null
+        }
+      ]
     },
     {
       "id": "pdf-07",
@@ -241,7 +258,7 @@
       "route": "pdf",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "Correctly states sinusoidal positional encoding with sine and cosine functions",
+      "judge_reason": "Correctly states sinusoidal sine/cosine positional encoding",
       "gold_pages": [
         6
       ],
@@ -249,12 +266,20 @@
         6
       ],
       "page_hit": true,
-      "latency_ms": 2366,
-      "server_ms": 1878,
-      "answer": "The Transformer uses **sinusoidal positional encodings**, i.e., sine and cosine functions of different frequencies that are added to the token embeddings[P1].",
+      "latency_ms": 2787,
+      "server_ms": 2301,
+      "answer": "The Transformer uses **sinusoidal positional encodings**—fixed sine and cosine functions of different frequencies that are added to the token embeddings[P1]. This sinusoidal form was chosen because it can represent relative positions linearly and may allow the model to extrapolate to longer sequences than seen during training[P2].",
       "sources": [
         {
           "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 6,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "P2",
           "type": "pdf",
           "doc_name": "attention.pdf",
           "page": 6,
@@ -280,9 +305,9 @@
         7
       ],
       "page_hit": true,
-      "latency_ms": 2717,
-      "server_ms": 2232,
-      "answer": "The WMT 2014 English‑German training set contains **about 4.5 million sentence pairs** and the authors encoded the sentences with byte‑pair encoding using a **shared source‑target vocabulary of roughly 37 000 tokens**[P1].",
+      "latency_ms": 3363,
+      "server_ms": 2880,
+      "answer": "The WMT 2014 English‑German training set contained **about 4.5 million sentence pairs** and the authors encoded sentences with a **shared source‑target vocabulary of roughly 37,000 tokens**[P1].",
       "sources": [
         {
           "tag": "P1",
@@ -303,7 +328,7 @@
       "route": "pdf",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "System answer includes the exact label smoothing value 0.1 as required",
+      "judge_reason": "System answer includes the required label smoothing value 0.1",
       "gold_pages": [
         8
       ],
@@ -311,8 +336,8 @@
         8
       ],
       "page_hit": true,
-      "latency_ms": 12134,
-      "server_ms": 11725,
+      "latency_ms": 2922,
+      "server_ms": 2307,
       "answer": "The Transformer models were trained with a label‑smoothing value of **ϵₗₛ = 0.1**[P1]",
       "sources": [
         {
@@ -342,9 +367,9 @@
         8
       ],
       "page_hit": true,
-      "latency_ms": 10205,
-      "server_ms": 9699,
-      "answer": "The Transformer used **beam search with a beam size of 4** and a **length‑penalty α = 0.6** during decoding[P1].",
+      "latency_ms": 8815,
+      "server_ms": 8290,
+      "answer": "The Transformer used a **beam size of 4** and a **length‑penalty α = 0.6** during decoding[P1].",
       "sources": [
         {
           "tag": "P1",
@@ -373,8 +398,8 @@
         10
       ],
       "page_hit": true,
-      "latency_ms": 10350,
-      "server_ms": 9889,
+      "latency_ms": 7197,
+      "server_ms": 6699,
       "answer": "The Transformer (4‑layer) model achieved an **F1 score of 92.7** on English constituency parsing in the semi‑supervised setting[P1].",
       "sources": [
         {
@@ -404,8 +429,8 @@
         8
       ],
       "page_hit": true,
-      "latency_ms": 11238,
-      "server_ms": 10701,
+      "latency_ms": 10403,
+      "server_ms": 9821,
       "answer": "- **Base model:** averaged the last **5 checkpoints**[P1] \n- **Big model:** averaged the last **20 checkpoints**[P1]",
       "sources": [
         {
@@ -435,9 +460,9 @@
         4
       ],
       "page_hit": true,
-      "latency_ms": 5928,
-      "server_ms": 5406,
-      "answer": "RAG uses the **December 2018 Wikipedia dump** as its non‑parametric knowledge source, and each Wikipedia article is broken into **disjoint 100‑word chunks**, yielding about **21 million documents**[P1].",
+      "latency_ms": 7070,
+      "server_ms": 6579,
+      "answer": "RAG uses the **December 2018 Wikipedia dump** as its non‑parametric knowledge source, and each Wikipedia article is divided into **disjoint 100‑word chunks**, yielding about **21 million documents**[P1].",
       "sources": [
         {
           "tag": "P1",
@@ -458,23 +483,32 @@
       "route": "pdf",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "Matches expected answer exactly",
+      "judge_reason": "System answer includes both key facts exactly as expected",
       "gold_pages": [
         3
       ],
       "cited_pages": [
-        3
+        3,
+        4
       ],
       "page_hit": true,
-      "latency_ms": 10277,
-      "server_ms": 9859,
-      "answer": "- **RAG‑Sequence** treats the retrieved document as a single latent variable that is used for the whole output sequence. The same document is fed to the generator for every target token, so the sequence probability is obtained by marginalising over the top‑K documents once and cannot be decomposed into a per‑token likelihood for beam search [P1][P4].\n\n- **RAG‑Token** allows a different retrieved document to be used for each target token. For every token the generator computes a distribution conditioned on each of the top‑K documents, then marginalises across them; this lets the model draw content from several documents within a single answer [P3][P4].\n\nThus, the key difference is that RAG‑Sequence uses one document for the entire generation, while RAG‑Token can switch documents token‑by‑token.",
+      "latency_ms": 10485,
+      "server_ms": 9947,
+      "answer": "- **RAG‑Sequence** treats the retrieved document as a single latent variable that is used for the whole output sequence. The same document is fed to the generator for every target token, so the sequence probability is computed by marginalising over the top‑K documents once and cannot be broken into a per‑token likelihood for beam search[P1][P4]. \n\n- **RAG‑Token** allows a different retrieved document to be used for each target token. For every token the generator computes a distribution conditioned on each of the top‑K documents, then marginalises across them; this lets the model draw content from several documents within a single answer and can be decoded with a standard beam decoder using the per‑token transition probability[P3][P4][P2].",
       "sources": [
         {
           "tag": "P1",
           "type": "pdf",
           "doc_name": "rag.pdf",
           "page": 3,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "P2",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 4,
           "title": null,
           "url": null
         },
@@ -505,7 +539,7 @@
       "route": "pdf",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "Matches expected answer with all key facts",
+      "judge_reason": "System answer includes DPR and correctly states both encoders are BERT-base bi-encoders",
       "gold_pages": [
         3
       ],
@@ -513,9 +547,9 @@
         3
       ],
       "page_hit": true,
-      "latency_ms": 8270,
-      "server_ms": 7840,
-      "answer": "RAG’s retriever is **DPR (Dense Passage Retrieval)**. In DPR a **bi‑encoder** architecture is used: \n\n* each document \\(z\\) is encoded into a dense vector \\(d(z)\\) by a **BERT‑BASE document encoder** \\(\\;d(z)=\\text{BERT}_d(z)\\) \n* each query \\(x\\) is encoded into a vector \\(q(x)\\) by a **BERT‑BASE query encoder** \\(\\;q(x)=\\text{BERT}_q(x)\\) \n\nThe relevance score is computed as the inner product \\(d(z)^{\\top} q(x)\\) and exponentiated to obtain \\(p_{\\eta}(z|x)\\)[P1].",
+      "latency_ms": 5013,
+      "server_ms": 4519,
+      "answer": "RAG uses a **DPR (Dense Passage Retrieval)** retriever. \nIn DPR the retrieval model is a bi‑encoder: \n\n- Each **document** is encoded by a BERT‑BASE document encoder \\(d(z)=\\text{BERT}_d(z)\\). \n- Each **query** is encoded by a separate BERT‑BASE query encoder \\(q(x)=\\text{BERT}_q(x)\\). \n\nThe similarity score is computed as the dot‑product of these dense vectors \\(d(z)^\\top q(x)\\) and exponentiated to form a probability distribution \\(p_\\eta(z|x)\\) [P1].",
       "sources": [
         {
           "tag": "P1",
@@ -544,9 +578,9 @@
         6
       ],
       "page_hit": true,
-      "latency_ms": 14568,
-      "server_ms": 14110,
-      "answer": "RAG‑Sequence obtains an exact‑match score of **44.5** on the Natural Questions (NQ) benchmark[P1].",
+      "latency_ms": 12681,
+      "server_ms": 12190,
+      "answer": "RAG‑Sequence obtains an exact‑match score of **44.5** on the Natural Questions benchmark[P1].",
       "sources": [
         {
           "tag": "P1",
@@ -567,7 +601,7 @@
       "route": "pdf",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "System answer includes the exact key fact that k is in {5,10}",
+      "judge_reason": "System answer includes the required key fact that k is 5 or 10",
       "gold_pages": [
         4,
         8
@@ -576,9 +610,9 @@
         4
       ],
       "page_hit": true,
-      "latency_ms": 10269,
-      "server_ms": 9688,
-      "answer": "RAG retrieves **either 5 or 10 documents per query during training** (the model is trained with k ∈ {5, 10})[P2]",
+      "latency_ms": 8467,
+      "server_ms": 7876,
+      "answer": "RAG is trained by retrieving the top k documents for each query, where k is set to either **5 or 10** documents during training[P2].",
       "sources": [
         {
           "tag": "P2",
@@ -599,7 +633,7 @@
       "route": "pdf",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "All required facts present and correct",
+      "judge_reason": "All required facts match the expected answer",
       "gold_pages": [
         17
       ],
@@ -607,9 +641,9 @@
         17
       ],
       "page_hit": true,
-      "latency_ms": 8022,
-      "server_ms": 7498,
-      "answer": "The RAG models were trained with mixed‑precision floating‑point arithmetic on **8 NVIDIA V100 GPUs, each with 32 GB of memory**[P1]. The document index vectors used for Maximum Inner Product Search were stored on the CPU, requiring about **100 GB of CPU memory**[P1].",
+      "latency_ms": 8238,
+      "server_ms": 7717,
+      "answer": "The RAG models were trained on **8 NVIDIA V100 GPUs**, each with **32 GB of memory**, using mixed‑precision floating‑point arithmetic. The document index vectors for Maximum Inner Product Search were stored on the CPU, requiring about **100 GB of CPU memory** for the entire Wikipedia index[P1].",
       "sources": [
         {
           "tag": "P1",
@@ -630,7 +664,7 @@
       "route": "hybrid",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "All required affiliations and the co‑founded company are correctly listed",
+      "judge_reason": "All required affiliations and the co‑founded company are correctly provided",
       "gold_pages": [
         1
       ],
@@ -638,9 +672,9 @@
         1
       ],
       "page_hit": true,
-      "latency_ms": 11978,
-      "server_ms": 11405,
-      "answer": "- **Affiliations of the Transformer paper’s authors (as listed in the paper):** \n * Ashish Vaswani – **Google Brain**[P1] \n * Noam Shazeer – **Google Brain**[P1] \n * Niki Parmar – **Google Research**[P1] \n * Jakob Uszkoreit – **Google Research**[P1] \n * Llion Jones – **Google Research**[P1] \n * Aidan N. Gomez – **University of Toronto** (†)[P1] \n * Łukasz Kaiser – **Google Brain**[P1] \n * Illia Polosukhin – **Google** (‡)[P1]\n\n- **AI company later co‑founded by Aidan Gomez:** **Cohere**[W1].",
+      "latency_ms": 10251,
+      "server_ms": 9639,
+      "answer": "- The authors of **“Attention Is All You Need”** were affiliated with **Google Brain**, **Google Research**, and **the University of Toronto** [P1] \n- Aidan Gómez later co‑founded the AI company **Cohere** [W1]",
       "sources": [
         {
           "tag": "P1",
@@ -655,8 +689,8 @@
           "type": "web",
           "doc_name": null,
           "page": null,
-          "title": "Aidan Gomez: From the Transformer Paper to Cohere",
-          "url": "https://digidai.github.io/2025/11/11/aidan-gomez-cohere-ceo-deep-analysis"
+          "title": "Instagram",
+          "url": "https://www.instagram.com/reel/DEUxbFDhcfv?hl=en"
         }
       ]
     },
@@ -669,7 +703,7 @@
       "route": "pdf",
       "route_ok": false,
       "correct": 0,
-      "judge_reason": "Missing the required memory details from the expected answer",
+      "judge_reason": "Missing required memory specification; does not match expected answer",
       "gold_pages": [
         2,
         7,
@@ -679,9 +713,9 @@
         7
       ],
       "page_hit": true,
-      "latency_ms": 10159,
-      "server_ms": 9677,
-      "answer": "The Transformer models were trained on **8 NVIDIA P100 GPUs**[P2]. \n\nThe PDF excerpts do not specify the memory capacity of the P100 GPU, and none of the provided web sources give that detail, so the GPU’s memory size is not available in the given context.",
+      "latency_ms": 7943,
+      "server_ms": 7391,
+      "answer": "The Transformer models were trained on **8 NVIDIA P100 GPUs**[P2]. \nThe PDF excerpts do not state the memory capacity of the P100 GPU, and none of the provided web sources give that specification, so the GPU’s memory amount is not available in the given context.",
       "sources": [
         {
           "tag": "P2",
@@ -702,7 +736,7 @@
       "route": "hybrid",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "All key facts present: December 2018 dump and ~7 million articles",
+      "judge_reason": "Provides the December 2018 dump and a roughly 7 million article count",
       "gold_pages": [
         4
       ],
@@ -710,9 +744,9 @@
         4
       ],
       "page_hit": true,
-      "latency_ms": 8142,
-      "server_ms": 7486,
-      "answer": "The RAG experiments use the **December 2018 Wikipedia dump** as their non‑parametric knowledge source[P1]. \n\nAs of 2026, the English Wikipedia contains **about 7.2 million articles**[W1].",
+      "latency_ms": 9873,
+      "server_ms": 9352,
+      "answer": "The RAG paper builds its non‑parametric knowledge source from the **December 2018 Wikipedia dump** [P1]. \n\nToday, the English Wikipedia contains **about 7.25 million articles** (7,248,107 according to the 2026 statistics) [W1].",
       "sources": [
         {
           "tag": "P1",
@@ -738,20 +772,31 @@
       "question": "Which library did the RAG authors use for the MIPS document index, and which company develops that library?",
       "allow_web": true,
       "expected_route": "hybrid",
-      "route": "none",
+      "route": "pdf",
       "route_ok": false,
       "correct": 1,
-      "judge_reason": "All key facts from expected answer are present and correct",
+      "judge_reason": "Includes both FAISS and its developer Facebook AI Research as required",
       "gold_pages": [
         4,
         17
       ],
-      "cited_pages": [],
-      "page_hit": null,
-      "latency_ms": 10235,
-      "server_ms": 9683,
-      "answer": "The authors built the maximum‑inner‑product (MIPS) document index with **FAISS** [​P2]. \nAccording to web sources, FAISS is developed by **Facebook AI Research (FAIR)**.",
-      "sources": []
+      "cited_pages": [
+        4
+      ],
+      "page_hit": true,
+      "latency_ms": 5443,
+      "server_ms": 4900,
+      "answer": "The authors built the maximum‑inner‑product (MIPS) index with **FAISS** [23] [P2]. \nFAISS is an open‑source library created and maintained by **Facebook AI Research (FAIR)**【According to web sources, FAISS is developed by Facebook AI Research】.",
+      "sources": [
+        {
+          "tag": "P2",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 4,
+          "title": null,
+          "url": null
+        }
+      ]
     },
     {
       "id": "hyb-05",
@@ -762,7 +807,7 @@
       "route": "pdf",
       "route_ok": false,
       "correct": 1,
-      "judge_reason": "All required facts (V100 32GB, Volta architecture, 2017 launch) are present and correct",
+      "judge_reason": "All required facts are present and correct",
       "gold_pages": [
         17
       ],
@@ -770,9 +815,9 @@
         17
       ],
       "page_hit": true,
-      "latency_ms": 7481,
-      "server_ms": 6981,
-      "answer": "The RAG models were trained on **8 × 32 GB NVIDIA V100 GPUs**[P1]. \n\nThe V100 belongs to NVIDIA’s **Volta architecture**, which was introduced in **2017**.",
+      "latency_ms": 7295,
+      "server_ms": 6748,
+      "answer": "The RAG models were trained on **32 GB NVIDIA V100 GPUs**[P1]. \nThe V100 belongs to NVIDIA’s **Volta architecture**, which was introduced in **2017**.",
       "sources": [
         {
           "tag": "P1",
@@ -793,7 +838,7 @@
       "route": "pdf",
       "route_ok": false,
       "correct": 0,
-      "judge_reason": "Missing the required university information",
+      "judge_reason": "Missing the university information required by the expected answer",
       "gold_pages": [
         9
       ],
@@ -801,9 +846,9 @@
         9
       ],
       "page_hit": true,
-      "latency_ms": 6270,
-      "server_ms": 5780,
-      "answer": "The Transformer experiments on English constituency parsing were conducted on the **Wall Street Journal (WSJ) portion of the Penn Treebank** [P1]. \n\nThe PDF excerpts do not specify which university created the Penn Treebank, so that information is not available in the provided context.",
+      "latency_ms": 9309,
+      "server_ms": 8747,
+      "answer": "The Transformer experiments on English constituency parsing were trained on the **Wall Street Journal (WSJ) portion of the Penn Treebank** [P1]. \n\nThe PDF excerpts do not state which university created the Penn Treebank, so that information is not available in the provided context.",
       "sources": [
         {
           "tag": "P1",
@@ -828,8 +873,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 8180,
-      "server_ms": 7523,
+      "latency_ms": 6459,
+      "server_ms": 5903,
       "answer": "Spain won the 2026 FIFA World Cup final, defeating Argentina 1‑0 in extra time[W2].",
       "sources": [
         {
@@ -851,13 +896,13 @@
       "route": "web",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "Correctly identifies latest stable release as Python 3.15.2 per web source",
+      "judge_reason": "Correctly identifies Python 3.15.2 as the latest stable release per web source",
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 12817,
-      "server_ms": 12266,
-      "answer": "The most recent stable Python version listed is **Python 3.15.2**, released on Oct 25 2026[W5].",
+      "latency_ms": 6709,
+      "server_ms": 6162,
+      "answer": "The most recent stable Python release listed is **Python 3.15.2** (released Oct 25 2026)[W5].",
       "sources": [
         {
           "tag": "W5",
@@ -878,13 +923,13 @@
       "route": "web",
       "route_ok": true,
       "correct": 1,
-      "judge_reason": "The answer correctly states Sam Altman as the current CEO, matching the expected answer.",
+      "judge_reason": "The answer correctly states Sam Altman as the CEO, matching the expected answer.",
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 10421,
-      "server_ms": 9881,
-      "answer": "The current CEO of OpenAI is **Sam Altman**[W2][W5].",
+      "latency_ms": 7996,
+      "server_ms": 7439,
+      "answer": "The current CEO of OpenAI is **Sam Altman**[W2].",
       "sources": [
         {
           "tag": "W2",
@@ -893,14 +938,6 @@
           "page": null,
           "title": "Who is the CEO of OpenAI in 2026? Sam Altman | Unify",
           "url": "https://www.unifygtm.com/insights/executives/openai-ceo"
-        },
-        {
-          "tag": "W5",
-          "type": "web",
-          "doc_name": null,
-          "page": null,
-          "title": "Sam Altman - Wikipedia",
-          "url": "https://en.wikipedia.org/wiki/Sam_Altman"
         }
       ]
     },
@@ -910,17 +947,34 @@
       "question": "What is the Reserve Bank of India's current repo rate?",
       "allow_web": true,
       "expected_route": "web",
-      "route": "error",
-      "route_ok": false,
-      "correct": 0,
-      "judge_reason": "No answer provided",
+      "route": "web",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Answer correctly states the current repo rate as 5.50% per the provided sources",
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 5434,
-      "server_ms": null,
-      "answer": "",
-      "sources": []
+      "latency_ms": 8460,
+      "server_ms": 7829,
+      "answer": "The Reserve Bank of India’s current repo rate is **5.50%** (raised from 5.25% on 7 October 2026)[W1][W2].",
+      "sources": [
+        {
+          "tag": "W1",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Check the Current Repo Rate 2026",
+          "url": "https://www.bankbazaar.com/home-loan/repo-rate.html"
+        },
+        {
+          "tag": "W2",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Repo Rate Today: RBI Current Repo Rate 2026 | Bajaj Finance",
+          "url": "https://www.bajajfinserv.in/repo-rate"
+        }
+      ]
     },
     {
       "id": "web-05",
@@ -935,8 +989,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 6897,
-      "server_ms": 6355,
+      "latency_ms": 5341,
+      "server_ms": 4839,
       "answer": "The 2026 Winter Olympics were hosted by **Italy**[W2].",
       "sources": [
         {
@@ -962,8 +1016,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 8857,
-      "server_ms": 8251,
+      "latency_ms": 8001,
+      "server_ms": 7297,
       "answer": "The current price of gold is **about $3,874 per troy ounce** in U.S. dollars[W1].",
       "sources": [
         {
@@ -989,8 +1043,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 6357,
-      "server_ms": 5795,
+      "latency_ms": 6454,
+      "server_ms": 5941,
       "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
       "sources": []
     },
@@ -1007,8 +1061,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 8212,
-      "server_ms": 7632,
+      "latency_ms": 7965,
+      "server_ms": 7434,
       "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
       "sources": []
     },
@@ -1025,8 +1079,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 8440,
-      "server_ms": 7806,
+      "latency_ms": 8688,
+      "server_ms": 8098,
       "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
       "sources": []
     },
@@ -1043,8 +1097,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 9771,
-      "server_ms": 9249,
+      "latency_ms": 2015,
+      "server_ms": 1466,
       "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
       "sources": []
     },
@@ -1061,8 +1115,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 5530,
-      "server_ms": 5045,
+      "latency_ms": 2201,
+      "server_ms": 1667,
       "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
       "sources": []
     },
@@ -1079,8 +1133,8 @@
       "gold_pages": [],
       "cited_pages": [],
       "page_hit": null,
-      "latency_ms": 8809,
-      "server_ms": 8215,
+      "latency_ms": 7982,
+      "server_ms": 7474,
       "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
       "sources": []
     }

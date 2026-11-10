@@ -30,13 +30,13 @@
 
 Tip: speed the indexing part up 2–3× in the editor and keep the cursor movements slow.
 
-## Resume bullets (fill the [brackets] from `eval/results.md`)
+## Resume bullets (numbers from eval run 2, `eval/results.md`)
 
-- Built **DocPilot**, an agentic PDF Q&A app (LangGraph corrective RAG, Groq gpt-oss-120b, Gemini embeddings, Supabase pgvector, FastAPI on Vercel). It grades its own retrieval, falls back to labelled web search, and streams answers with clickable page citations. On a 30-question benchmark it scored **[X]% answer correctness**, **[Y]% routing accuracy** and **[Z]% citation page accuracy** at **[p50] s median latency**.
-- Engineered hybrid retrieval (HNSW cosine + Postgres full-text fused with Reciprocal Rank Fusion in one SQL function) and a serverless ingestion pipeline. It parses 1,000-page PDFs in the browser, OCRs scanned pages with Gemini vision, and is covered by 80 offline tests plus a Playwright E2E. It also includes prompt-injection hardening, per-IP rate limits and CI.
+- Built **DocPilot**, an agentic PDF Q&A app (LangGraph corrective RAG, Groq gpt-oss-120b, Gemini embeddings, Supabase pgvector, FastAPI on Vercel). It grades its own retrieval, falls back to labelled web search, and streams answers with clickable page citations. On a 30-question benchmark it scored **92% answer correctness**, **89% routing accuracy** and **96% citation page accuracy** at **7.1 s median latency**.
+- Engineered hybrid retrieval (HNSW cosine + Postgres full-text fused with Reciprocal Rank Fusion in one SQL function) and a serverless ingestion pipeline. It parses 1,000-page PDFs in the browser, OCRs scanned pages with Gemini vision, and is covered by 82 offline tests plus a Playwright E2E. It also includes prompt-injection hardening, per-IP rate limits and CI.
 
 ## LinkedIn post (3 lines)
 
 > Shipped **DocPilot**: upload PDFs, ask questions, get answers with **clickable page citations** that open the exact passage. When the PDFs don't have it, it searches the web and clearly labels that part.
-> Under the hood: a LangGraph corrective-RAG agent (retrieve → grade → web fallback → verify citations), hybrid pgvector + full-text search with RRF, streaming FastAPI on Vercel. [X]% answer correctness on a 30-question eval.
-> Live demo + code: [link] · Built with Groq, Gemini, Supabase and Tavily. Feedback welcome!
+> Under the hood: a LangGraph corrective-RAG agent (retrieve → grade → web fallback → verify citations), hybrid pgvector + full-text search with RRF, streaming FastAPI on Vercel. 92% answer correctness and 96% citation page accuracy on a 30-question eval.
+> Live demo: https://docpilot-eta.vercel.app · Code: https://github.com/NiKeT972/DocPilot · Built with Groq, Gemini, Supabase and Tavily. Feedback welcome!
