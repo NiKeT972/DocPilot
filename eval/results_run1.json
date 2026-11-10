@@ -1,0 +1,1088 @@
+{
+  "summary": {
+    "n": 36,
+    "routing_accuracy": 0.8333333333333334,
+    "answer_correctness": 0.8888888888888888,
+    "citation_page_accuracy": 1.0,
+    "pdf_questions_with_pdf_citation": 22,
+    "pdf_questions": 24,
+    "p50_s": 8.196,
+    "p95_s": 12.30475,
+    "by_category": {
+      "pdf": {
+        "n": 18,
+        "routing": 0.9444444444444444,
+        "correct": 0.9444444444444444,
+        "p50_s": 6.975
+      },
+      "hybrid": {
+        "n": 6,
+        "routing": 0.3333333333333333,
+        "correct": 0.6666666666666666,
+        "p50_s": 9.1505
+      },
+      "web": {
+        "n": 6,
+        "routing": 0.8333333333333334,
+        "correct": 0.8333333333333334,
+        "p50_s": 8.5185
+      },
+      "web-off": {
+        "n": 6,
+        "routing": 1.0,
+        "correct": 1.0,
+        "p50_s": 8.326
+      }
+    },
+    "confusion": {
+      "pdf->pdf": 17,
+      "pdf->none": 1,
+      "hybrid->hybrid": 2,
+      "hybrid->pdf": 3,
+      "hybrid->none": 1,
+      "web->web": 5,
+      "web->error": 1,
+      "none->none": 6
+    }
+  },
+  "rows": [
+    {
+      "id": "pdf-01",
+      "category": "pdf",
+      "question": "What BLEU score does the Transformer achieve on the WMT 2014 English-to-German translation task?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Matches expected BLEU value",
+      "gold_pages": [
+        1,
+        8
+      ],
+      "cited_pages": [
+        8,
+        1
+      ],
+      "page_hit": true,
+      "latency_ms": 3951,
+      "server_ms": 2740,
+      "answer": "The Transformer achieves a **BLEU score of 28.4** on the WMT 2014 English‑to‑German translation task[P1][P3].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 8,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "P3",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 1,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-02",
+      "category": "pdf",
+      "question": "What BLEU score did the Transformer reach on WMT 2014 English-to-French, and how long did training take?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Matches expected BLEU and training time exactly",
+      "gold_pages": [
+        1,
+        8
+      ],
+      "cited_pages": [
+        1
+      ],
+      "page_hit": true,
+      "latency_ms": 2993,
+      "server_ms": 2546,
+      "answer": "The Transformer achieved a **BLEU score of 41.8** on the WMT 2014 English‑to‑French translation task, after **training for 3.5 days on eight GPUs**[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 1,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-03",
+      "category": "pdf",
+      "question": "How many identical layers are in the Transformer's encoder stack?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "System answer correctly states there are 6 identical layers, matching the expected answer",
+      "gold_pages": [
+        3
+      ],
+      "cited_pages": [
+        3
+      ],
+      "page_hit": true,
+      "latency_ms": 2482,
+      "server_ms": 1995,
+      "answer": "The Transformer's encoder stack consists of **6 identical layers**[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 3,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-04",
+      "category": "pdf",
+      "question": "What is the output dimension d_model used by the sub-layers and embeddings in the base Transformer?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "System answer correctly provides d_model = 512 as required",
+      "gold_pages": [
+        3
+      ],
+      "cited_pages": [
+        3
+      ],
+      "page_hit": true,
+      "latency_ms": 3092,
+      "server_ms": 2625,
+      "answer": "The base Transformer uses an output dimension **d model = 512** for all sub‑layers and for the embedding layers[P2].",
+      "sources": [
+        {
+          "tag": "P2",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 3,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-05",
+      "category": "pdf",
+      "question": "How many parallel attention heads does the base Transformer use?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "System answer includes the required fact of 8 heads",
+      "gold_pages": [
+        5
+      ],
+      "cited_pages": [
+        5
+      ],
+      "page_hit": true,
+      "latency_ms": 3393,
+      "server_ms": 2916,
+      "answer": "The base Transformer uses **8 parallel attention heads** [P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 5,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-06",
+      "category": "pdf",
+      "question": "Why are the dot products scaled by 1/sqrt(d_k) in scaled dot-product attention?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "none",
+      "route_ok": false,
+      "correct": 1,
+      "judge_reason": "Matches expected answer, includes all key facts",
+      "gold_pages": [
+        4
+      ],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 4762,
+      "server_ms": 3923,
+      "answer": "The dot products can become very large when the dimensionality \\(d_k\\) is large, because each component of the query and key contributes to the sum and the variance of the dot product grows with \\(d_k\\) [​P1]. \nIf the raw dot products are fed directly into the softmax, the large magnitudes push the softmax into regions with extremely small gradients, making training difficult. \nScaling the dot products by \\(1/\\sqrt{d_k}\\) reduces their magnitude to a more stable range, keeping the softmax gradients well‑behaved and improving learning stability [​P1][​P2][​P3].",
+      "sources": []
+    },
+    {
+      "id": "pdf-07",
+      "category": "pdf",
+      "question": "What kind of positional encoding does the Transformer use?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Correctly states sinusoidal positional encoding with sine and cosine functions",
+      "gold_pages": [
+        6
+      ],
+      "cited_pages": [
+        6
+      ],
+      "page_hit": true,
+      "latency_ms": 2366,
+      "server_ms": 1878,
+      "answer": "The Transformer uses **sinusoidal positional encodings**, i.e., sine and cosine functions of different frequencies that are added to the token embeddings[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 6,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-08",
+      "category": "pdf",
+      "question": "How large was the WMT 2014 English-German training set and what vocabulary did they use?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "All key facts from expected answer are present and correct",
+      "gold_pages": [
+        7
+      ],
+      "cited_pages": [
+        7
+      ],
+      "page_hit": true,
+      "latency_ms": 2717,
+      "server_ms": 2232,
+      "answer": "The WMT 2014 English‑German training set contains **about 4.5 million sentence pairs** and the authors encoded the sentences with byte‑pair encoding using a **shared source‑target vocabulary of roughly 37 000 tokens**[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 7,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-09",
+      "category": "pdf",
+      "question": "What label smoothing value was used when training the Transformer?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "System answer includes the exact label smoothing value 0.1 as required",
+      "gold_pages": [
+        8
+      ],
+      "cited_pages": [
+        8
+      ],
+      "page_hit": true,
+      "latency_ms": 12134,
+      "server_ms": 11725,
+      "answer": "The Transformer models were trained with a label‑smoothing value of **ϵₗₛ = 0.1**[P1]",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 8,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-10",
+      "category": "pdf",
+      "question": "What beam size and length penalty did the Transformer use for decoding?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "All required facts present and correct",
+      "gold_pages": [
+        8
+      ],
+      "cited_pages": [
+        8
+      ],
+      "page_hit": true,
+      "latency_ms": 10205,
+      "server_ms": 9699,
+      "answer": "The Transformer used **beam search with a beam size of 4** and a **length‑penalty α = 0.6** during decoding[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 8,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-11",
+      "category": "pdf",
+      "question": "What F1 score did the Transformer reach on English constituency parsing in the semi-supervised setting?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 0,
+      "judge_reason": "Missing the required 91.3 F1 figure for WSJ‑only training",
+      "gold_pages": [
+        10
+      ],
+      "cited_pages": [
+        10
+      ],
+      "page_hit": true,
+      "latency_ms": 10350,
+      "server_ms": 9889,
+      "answer": "The Transformer (4‑layer) model achieved an **F1 score of 92.7** on English constituency parsing in the semi‑supervised setting[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 10,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-12",
+      "category": "pdf",
+      "question": "How many checkpoints were averaged for the base and big Transformer models?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Matches expected answer exactly",
+      "gold_pages": [
+        8
+      ],
+      "cited_pages": [
+        8
+      ],
+      "page_hit": true,
+      "latency_ms": 11238,
+      "server_ms": 10701,
+      "answer": "- **Base model:** averaged the last **5 checkpoints**[P1] \n- **Big model:** averaged the last **20 checkpoints**[P1]",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 8,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-13",
+      "category": "pdf",
+      "question": "Which Wikipedia dump does RAG use as its knowledge source and how is it split into documents?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "All key facts from expected answer are present and correct",
+      "gold_pages": [
+        4
+      ],
+      "cited_pages": [
+        4
+      ],
+      "page_hit": true,
+      "latency_ms": 5928,
+      "server_ms": 5406,
+      "answer": "RAG uses the **December 2018 Wikipedia dump** as its non‑parametric knowledge source, and each Wikipedia article is broken into **disjoint 100‑word chunks**, yielding about **21 million documents**[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 4,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-14",
+      "category": "pdf",
+      "question": "What is the difference between RAG-Sequence and RAG-Token?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Matches expected answer exactly",
+      "gold_pages": [
+        3
+      ],
+      "cited_pages": [
+        3
+      ],
+      "page_hit": true,
+      "latency_ms": 10277,
+      "server_ms": 9859,
+      "answer": "- **RAG‑Sequence** treats the retrieved document as a single latent variable that is used for the whole output sequence. The same document is fed to the generator for every target token, so the sequence probability is obtained by marginalising over the top‑K documents once and cannot be decomposed into a per‑token likelihood for beam search [P1][P4].\n\n- **RAG‑Token** allows a different retrieved document to be used for each target token. For every token the generator computes a distribution conditioned on each of the top‑K documents, then marginalises across them; this lets the model draw content from several documents within a single answer [P3][P4].\n\nThus, the key difference is that RAG‑Sequence uses one document for the entire generation, while RAG‑Token can switch documents token‑by‑token.",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 3,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "P3",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 3,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "P4",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 3,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-15",
+      "category": "pdf",
+      "question": "What retriever does RAG use and how are queries and documents encoded?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Matches expected answer with all key facts",
+      "gold_pages": [
+        3
+      ],
+      "cited_pages": [
+        3
+      ],
+      "page_hit": true,
+      "latency_ms": 8270,
+      "server_ms": 7840,
+      "answer": "RAG’s retriever is **DPR (Dense Passage Retrieval)**. In DPR a **bi‑encoder** architecture is used: \n\n* each document \\(z\\) is encoded into a dense vector \\(d(z)\\) by a **BERT‑BASE document encoder** \\(\\;d(z)=\\text{BERT}_d(z)\\) \n* each query \\(x\\) is encoded into a vector \\(q(x)\\) by a **BERT‑BASE query encoder** \\(\\;q(x)=\\text{BERT}_q(x)\\) \n\nThe relevance score is computed as the inner product \\(d(z)^{\\top} q(x)\\) and exponentiated to obtain \\(p_{\\eta}(z|x)\\)[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 3,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-16",
+      "category": "pdf",
+      "question": "What exact match score does RAG-Sequence achieve on Natural Questions?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "System answer includes the exact match score 44.5 as required",
+      "gold_pages": [
+        6
+      ],
+      "cited_pages": [
+        6
+      ],
+      "page_hit": true,
+      "latency_ms": 14568,
+      "server_ms": 14110,
+      "answer": "RAG‑Sequence obtains an exact‑match score of **44.5** on the Natural Questions (NQ) benchmark[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 6,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-17",
+      "category": "pdf",
+      "question": "How many documents does RAG retrieve per query during training?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "System answer includes the exact key fact that k is in {5,10}",
+      "gold_pages": [
+        4,
+        8
+      ],
+      "cited_pages": [
+        4
+      ],
+      "page_hit": true,
+      "latency_ms": 10269,
+      "server_ms": 9688,
+      "answer": "RAG retrieves **either 5 or 10 documents per query during training** (the model is trained with k ∈ {5, 10})[P2]",
+      "sources": [
+        {
+          "tag": "P2",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 4,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "pdf-18",
+      "category": "pdf",
+      "question": "What hardware were the RAG models trained on?",
+      "allow_web": true,
+      "expected_route": "pdf",
+      "route": "pdf",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "All required facts present and correct",
+      "gold_pages": [
+        17
+      ],
+      "cited_pages": [
+        17
+      ],
+      "page_hit": true,
+      "latency_ms": 8022,
+      "server_ms": 7498,
+      "answer": "The RAG models were trained with mixed‑precision floating‑point arithmetic on **8 NVIDIA V100 GPUs, each with 32 GB of memory**[P1]. The document index vectors used for Maximum Inner Product Search were stored on the CPU, requiring about **100 GB of CPU memory**[P1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 17,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "hyb-01",
+      "category": "hybrid",
+      "question": "Which organisations were the Transformer paper's authors affiliated with, and which AI company did co-author Aidan Gomez later co-found?",
+      "allow_web": true,
+      "expected_route": "hybrid",
+      "route": "hybrid",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "All required affiliations and the co‑founded company are correctly listed",
+      "gold_pages": [
+        1
+      ],
+      "cited_pages": [
+        1
+      ],
+      "page_hit": true,
+      "latency_ms": 11978,
+      "server_ms": 11405,
+      "answer": "- **Affiliations of the Transformer paper’s authors (as listed in the paper):** \n * Ashish Vaswani – **Google Brain**[P1] \n * Noam Shazeer – **Google Brain**[P1] \n * Niki Parmar – **Google Research**[P1] \n * Jakob Uszkoreit – **Google Research**[P1] \n * Llion Jones – **Google Research**[P1] \n * Aidan N. Gomez – **University of Toronto** (†)[P1] \n * Łukasz Kaiser – **Google Brain**[P1] \n * Illia Polosukhin – **Google** (‡)[P1]\n\n- **AI company later co‑founded by Aidan Gomez:** **Cohere**[W1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 1,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "W1",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Aidan Gomez: From the Transformer Paper to Cohere",
+          "url": "https://digidai.github.io/2025/11/11/aidan-gomez-cohere-ceo-deep-analysis"
+        }
+      ]
+    },
+    {
+      "id": "hyb-02",
+      "category": "hybrid",
+      "question": "How many GPUs and which GPU model were used to train the Transformer, and how much memory does that GPU have?",
+      "allow_web": true,
+      "expected_route": "hybrid",
+      "route": "pdf",
+      "route_ok": false,
+      "correct": 0,
+      "judge_reason": "Missing the required memory details from the expected answer",
+      "gold_pages": [
+        2,
+        7,
+        8
+      ],
+      "cited_pages": [
+        7
+      ],
+      "page_hit": true,
+      "latency_ms": 10159,
+      "server_ms": 9677,
+      "answer": "The Transformer models were trained on **8 NVIDIA P100 GPUs**[P2]. \n\nThe PDF excerpts do not specify the memory capacity of the P100 GPU, and none of the provided web sources give that detail, so the GPU’s memory size is not available in the given context.",
+      "sources": [
+        {
+          "tag": "P2",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 7,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "hyb-03",
+      "category": "hybrid",
+      "question": "Which Wikipedia dump does the RAG paper use, and roughly how many articles does English Wikipedia have today?",
+      "allow_web": true,
+      "expected_route": "hybrid",
+      "route": "hybrid",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "All key facts present: December 2018 dump and ~7 million articles",
+      "gold_pages": [
+        4
+      ],
+      "cited_pages": [
+        4
+      ],
+      "page_hit": true,
+      "latency_ms": 8142,
+      "server_ms": 7486,
+      "answer": "The RAG experiments use the **December 2018 Wikipedia dump** as their non‑parametric knowledge source[P1]. \n\nAs of 2026, the English Wikipedia contains **about 7.2 million articles**[W1].",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 4,
+          "title": null,
+          "url": null
+        },
+        {
+          "tag": "W1",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Wikipedia:Statistics - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Wikipedia:Statistics"
+        }
+      ]
+    },
+    {
+      "id": "hyb-04",
+      "category": "hybrid",
+      "question": "Which library did the RAG authors use for the MIPS document index, and which company develops that library?",
+      "allow_web": true,
+      "expected_route": "hybrid",
+      "route": "none",
+      "route_ok": false,
+      "correct": 1,
+      "judge_reason": "All key facts from expected answer are present and correct",
+      "gold_pages": [
+        4,
+        17
+      ],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 10235,
+      "server_ms": 9683,
+      "answer": "The authors built the maximum‑inner‑product (MIPS) document index with **FAISS** [​P2]. \nAccording to web sources, FAISS is developed by **Facebook AI Research (FAIR)**.",
+      "sources": []
+    },
+    {
+      "id": "hyb-05",
+      "category": "hybrid",
+      "question": "What GPUs were used to train RAG, and what NVIDIA architecture are those GPUs based on and when was it launched?",
+      "allow_web": true,
+      "expected_route": "hybrid",
+      "route": "pdf",
+      "route_ok": false,
+      "correct": 1,
+      "judge_reason": "All required facts (V100 32GB, Volta architecture, 2017 launch) are present and correct",
+      "gold_pages": [
+        17
+      ],
+      "cited_pages": [
+        17
+      ],
+      "page_hit": true,
+      "latency_ms": 7481,
+      "server_ms": 6981,
+      "answer": "The RAG models were trained on **8 × 32 GB NVIDIA V100 GPUs**[P1]. \n\nThe V100 belongs to NVIDIA’s **Volta architecture**, which was introduced in **2017**.",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "rag.pdf",
+          "page": 17,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "hyb-06",
+      "category": "hybrid",
+      "question": "Which dataset did the Transformer paper use for English constituency parsing, and which university created that treebank?",
+      "allow_web": true,
+      "expected_route": "hybrid",
+      "route": "pdf",
+      "route_ok": false,
+      "correct": 0,
+      "judge_reason": "Missing the required university information",
+      "gold_pages": [
+        9
+      ],
+      "cited_pages": [
+        9
+      ],
+      "page_hit": true,
+      "latency_ms": 6270,
+      "server_ms": 5780,
+      "answer": "The Transformer experiments on English constituency parsing were conducted on the **Wall Street Journal (WSJ) portion of the Penn Treebank** [P1]. \n\nThe PDF excerpts do not specify which university created the Penn Treebank, so that information is not available in the provided context.",
+      "sources": [
+        {
+          "tag": "P1",
+          "type": "pdf",
+          "doc_name": "attention.pdf",
+          "page": 9,
+          "title": null,
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "web-01",
+      "category": "web",
+      "question": "Who won the 2026 FIFA World Cup final?",
+      "allow_web": true,
+      "expected_route": "web",
+      "route": "web",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Correctly states Spain won 1-0 over Argentina, matching the web source",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 8180,
+      "server_ms": 7523,
+      "answer": "Spain won the 2026 FIFA World Cup final, defeating Argentina 1‑0 in extra time[W2].",
+      "sources": [
+        {
+          "tag": "W2",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "2026 FIFA World Cup Scores & Results | FOX Sports",
+          "url": "https://www.foxsports.com/soccer/fifa-world-cup/scores"
+        }
+      ]
+    },
+    {
+      "id": "web-02",
+      "category": "web",
+      "question": "What is the latest stable release of Python?",
+      "allow_web": true,
+      "expected_route": "web",
+      "route": "web",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Correctly identifies latest stable release as Python 3.15.2 per web source",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 12817,
+      "server_ms": 12266,
+      "answer": "The most recent stable Python version listed is **Python 3.15.2**, released on Oct 25 2026[W5].",
+      "sources": [
+        {
+          "tag": "W5",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Download Python | Python.org",
+          "url": "https://www.python.org/downloads"
+        }
+      ]
+    },
+    {
+      "id": "web-03",
+      "category": "web",
+      "question": "Who is the current CEO of OpenAI?",
+      "allow_web": true,
+      "expected_route": "web",
+      "route": "web",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "The answer correctly states Sam Altman as the current CEO, matching the expected answer.",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 10421,
+      "server_ms": 9881,
+      "answer": "The current CEO of OpenAI is **Sam Altman**[W2][W5].",
+      "sources": [
+        {
+          "tag": "W2",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Who is the CEO of OpenAI in 2026? Sam Altman | Unify",
+          "url": "https://www.unifygtm.com/insights/executives/openai-ceo"
+        },
+        {
+          "tag": "W5",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Sam Altman - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Sam_Altman"
+        }
+      ]
+    },
+    {
+      "id": "web-04",
+      "category": "web",
+      "question": "What is the Reserve Bank of India's current repo rate?",
+      "allow_web": true,
+      "expected_route": "web",
+      "route": "error",
+      "route_ok": false,
+      "correct": 0,
+      "judge_reason": "No answer provided",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 5434,
+      "server_ms": null,
+      "answer": "",
+      "sources": []
+    },
+    {
+      "id": "web-05",
+      "category": "web",
+      "question": "Which country hosted the 2026 Winter Olympics?",
+      "allow_web": true,
+      "expected_route": "web",
+      "route": "web",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Correctly identifies Italy as the host",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 6897,
+      "server_ms": 6355,
+      "answer": "The 2026 Winter Olympics were hosted by **Italy**[W2].",
+      "sources": [
+        {
+          "tag": "W2",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Milano Cortina 2026 Winter Olympic Games | Sports, Host, Bid, Selection, & Venues | Britannica",
+          "url": "https://www.britannica.com/event/Milano-Cortina-2026-Olympic-Winter-Games"
+        }
+      ]
+    },
+    {
+      "id": "web-06",
+      "category": "web",
+      "question": "What is the current price of gold per troy ounce in US dollars?",
+      "allow_web": true,
+      "expected_route": "web",
+      "route": "web",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "Provides the current gold price matching the source (≈$3,874 per ounce)",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 8857,
+      "server_ms": 8251,
+      "answer": "The current price of gold is **about $3,874 per troy ounce** in U.S. dollars[W1].",
+      "sources": [
+        {
+          "tag": "W1",
+          "type": "web",
+          "doc_name": null,
+          "page": null,
+          "title": "Gold Price Today | Price of Gold Per Ounce | 24 Hour Spot Chart | KITCO",
+          "url": "https://www.kitco.com/charts/gold"
+        }
+      ]
+    },
+    {
+      "id": "web-01-webOff",
+      "category": "web-off",
+      "question": "Who won the 2026 FIFA World Cup final?",
+      "allow_web": false,
+      "expected_route": "none",
+      "route": "none",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "expected a not-found answer with web off",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 6357,
+      "server_ms": 5795,
+      "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
+      "sources": []
+    },
+    {
+      "id": "web-02-webOff",
+      "category": "web-off",
+      "question": "What is the latest stable release of Python?",
+      "allow_web": false,
+      "expected_route": "none",
+      "route": "none",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "expected a not-found answer with web off",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 8212,
+      "server_ms": 7632,
+      "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
+      "sources": []
+    },
+    {
+      "id": "web-03-webOff",
+      "category": "web-off",
+      "question": "Who is the current CEO of OpenAI?",
+      "allow_web": false,
+      "expected_route": "none",
+      "route": "none",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "expected a not-found answer with web off",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 8440,
+      "server_ms": 7806,
+      "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
+      "sources": []
+    },
+    {
+      "id": "web-04-webOff",
+      "category": "web-off",
+      "question": "What is the Reserve Bank of India's current repo rate?",
+      "allow_web": false,
+      "expected_route": "none",
+      "route": "none",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "expected a not-found answer with web off",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 9771,
+      "server_ms": 9249,
+      "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
+      "sources": []
+    },
+    {
+      "id": "web-05-webOff",
+      "category": "web-off",
+      "question": "Which country hosted the 2026 Winter Olympics?",
+      "allow_web": false,
+      "expected_route": "none",
+      "route": "none",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "expected a not-found answer with web off",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 5530,
+      "server_ms": 5045,
+      "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
+      "sources": []
+    },
+    {
+      "id": "web-06-webOff",
+      "category": "web-off",
+      "question": "What is the current price of gold per troy ounce in US dollars?",
+      "allow_web": false,
+      "expected_route": "none",
+      "route": "none",
+      "route_ok": true,
+      "correct": 1,
+      "judge_reason": "expected a not-found answer with web off",
+      "gold_pages": [],
+      "cited_pages": [],
+      "page_hit": null,
+      "latency_ms": 8809,
+      "server_ms": 8215,
+      "answer": "I couldn't find the answer to this in your PDFs. Turn on **Search the web** in the sidebar if you'd like me to look online.",
+      "sources": []
+    }
+  ]
+}

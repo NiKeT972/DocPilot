@@ -111,3 +111,28 @@ async def test_429_backoff_has_floor(monkeypatch):
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as c:
         await post_json(c, "https://x.test", json={}, min_429_delay=10, max_delay=65)
     assert sleeps[0] >= 10 and sleeps[1] >= 20
+
+
+async def test_groq_stream_retries_rate_limit_before_first_token(monkeypatch):
+    from docpilot.llm import GroqLLM
+
+    async def fake_sleep(s):
+        pass
+
+    monkeypatch.setattr("docpilot.llm.asyncio.sleep", fake_sleep)
+    calls = {"n": 0}
+
+    def handler(request):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return httpx.Response(429, headers={"retry-after": "1"}, json={"error": {"message": "slow down"}})
+        body = 'data: {"choices":[{"delta":{"content":"Hello"}}]}\n\ndata: [DONE]\n\n'
+        return httpx.Response(200, text=body, headers={"content-type": "text/event-stream"})
+
+    real_client = httpx.AsyncClient
+    monkeypatch.setattr(
+        "docpilot.llm.httpx.AsyncClient", lambda **kw: real_client(transport=httpx.MockTransport(handler))
+    )
+    llm = GroqLLM("k", "openai/gpt-oss-120b")
+    out = [t async for t in llm.stream([{"role": "user", "content": "hi"}])]
+    assert out == ["Hello"] and calls["n"] == 2
