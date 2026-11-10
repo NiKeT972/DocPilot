@@ -2,7 +2,7 @@
 
 Upload PDFs and ask questions. DocPilot answers from your documents with **page-level citations you can click** to open the PDF at the cited passage. When the PDFs don't have the answer, it searches the web and **labels that part of the answer as coming from the web**.
 
-**Live demo:** _coming soon (deploying to Vercel)_ · **Stack:** LangGraph · Groq (gpt-oss-120b / 20b) · Gemini embeddings · Supabase pgvector · Tavily · FastAPI · Vercel
+**Live demo:** [docpilot-eta.vercel.app](https://docpilot-eta.vercel.app) · **Stack:** LangGraph · Groq (gpt-oss-120b / 20b) · Gemini embeddings · Supabase pgvector · Tavily · FastAPI · Vercel
 
 ![DocPilot answering from a 100-page report, with the cited table highlighted in the built-in PDF viewer](docs/screenshot-desktop.png)
 
@@ -47,7 +47,14 @@ Corrective RAG in five lines:
 
 `python -m eval.run` uploads two public papers (*Attention Is All You Need*, *RAG* by Lewis et al.) and asks 30 questions: 18 answerable from the PDFs (hand-verified gold pages), 6 that need PDF + web, and 6 current-events questions (asked again with web off, expecting "Not found"). It reports routing accuracy, LLM-as-judge correctness, citation page accuracy and p50/p95 latency.
 
-> Results will be published in [`eval/results.md`](eval/results.md) after the first full run. (It was paused by the Gemini free-tier daily embedding quota.)
+| Metric (36 runs, run 2) | Result |
+|---|---|
+| Answer correctness (LLM-as-judge, strict 0/1) | **92%** |
+| Routing accuracy (pdf / hybrid / web / none) | **89%** |
+| Citation page accuracy (a cited page holds the answer) | **96%** |
+| Latency p50 / p95 (end-to-end, non-streamed) | **7.1 s / 10.4 s** |
+
+By category: PDF-only questions are 100% routed and 94% correct; current events with web on are 100% / 100%; web-off "not found" is 100%. Hybrid (PDF + web) is the weak spot: 33% routed, 67% correct. Two-part questions are often judged "fully answered" by the PDF, so web search never runs. Full per-question results, both runs and the bug fixes between them are in [`eval/results.md`](eval/results.md). Nothing was tuned on the questions.
 
 ## Run locally
 
@@ -61,7 +68,7 @@ uvicorn app:app --reload    # http://localhost:8000
 Without Supabase it uses an in-memory store; without a Tavily key, web search is disabled and the UI says so. No keys at all? `python scripts/dev_fake.py` runs the full UI against offline fakes.
 
 ```bash
-pytest -q && ruff check .                     # 80 offline tests, no keys needed
+pytest -q && ruff check .                     # 82 offline tests, no keys needed
 python scripts/make_sample_pdf.py sample.pdf 300
 PDF=sample.pdf node e2e/smoke.mjs             # Playwright: upload → ask → click citation → viewer page
 ```
@@ -111,7 +118,7 @@ tests/     offline unit + API tests with fakes · e2e/smoke.mjs (Playwright)
 - Sessions are anonymous (a random id in the browser) and expire after 7 days; there are no user accounts.
 - Gemini's free tier allows ~1,000 embeddings per day (~250 pages); the public demo needs a paid key for large uploads.
 - Highlighting matches the cited chunk against the page's text layer; it's best-effort on complex layouts and tables.
-- Roadmap: reranker after RRF, table-aware chunking, per-user auth, answer caching, multilingual embeddings.
+- Hybrid two-part questions are under-routed to the web (see eval). Roadmap: decompose multi-part questions before grading, reranker after RRF, table-aware chunking, per-user auth, answer caching, multilingual embeddings.
 
 ## License
 
