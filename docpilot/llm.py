@@ -6,6 +6,7 @@ model doesn't exist we raise a clear, user-safe error instead of a stack trace.
 
 from __future__ import annotations
 
+import asyncio
 import contextlib
 import json
 from collections.abc import AsyncIterator
@@ -13,7 +14,7 @@ from typing import Protocol
 
 import httpx
 
-from .httpx_retry import UpstreamError, post_json
+from .httpx_retry import RETRY_STATUS, UpstreamError, _retry_after, post_json
 
 GROQ_BASE = "https://api.groq.com/openai/v1"
 
@@ -73,6 +74,7 @@ class GroqLLM:
         self.temperature = temperature
         self.reasoning_effort = reasoning_effort
         self.timeout = timeout
+        self.stream_retries = 3
 
     def _body(self, messages: list[Message], max_tokens: int, stream: bool, json_mode: bool = False) -> dict:
         body: dict = {
@@ -118,33 +120,40 @@ class GroqLLM:
             return ""
 
     async def stream(self, messages: list[Message], *, max_tokens: int = 2048) -> AsyncIterator[str]:
+        """Stream answer tokens. Rate limits and 5xx before the first token are retried."""
         async with httpx.AsyncClient(timeout=httpx.Timeout(self.timeout, read=60)) as client:
-            try:
-                async with client.stream(
-                    "POST",
-                    f"{GROQ_BASE}/chat/completions",
-                    json=self._body(messages, max_tokens, True),
-                    headers=self._headers,
-                ) as resp:
-                    if resp.status_code >= 400:
-                        raw = (await resp.aread()).decode("utf-8", "replace")
-                        msg = raw
-                        with contextlib.suppress(Exception):
-                            msg = json.loads(raw).get("error", {}).get("message", raw)
-                        raise _model_error(
-                            self.model, resp.status_code, f"Groq error {resp.status_code}: {msg[:300]}"
-                        )
-                    async for line in resp.aiter_lines():
-                        if not line.startswith("data:"):
-                            continue
-                        payload = line[5:].strip()
-                        if payload == "[DONE]":
-                            break
-                        try:
-                            delta = json.loads(payload)["choices"][0].get("delta", {}).get("content")
-                        except (ValueError, KeyError, IndexError):
-                            continue
-                        if delta:
-                            yield delta
-            except httpx.TransportError as exc:
-                raise UpstreamError("Lost connection to the language model.") from exc
+            for attempt in range(self.stream_retries + 1):
+                try:
+                    async with client.stream(
+                        "POST",
+                        f"{GROQ_BASE}/chat/completions",
+                        json=self._body(messages, max_tokens, True),
+                        headers=self._headers,
+                    ) as resp:
+                        if resp.status_code >= 400:
+                            raw = (await resp.aread()).decode("utf-8", "replace")
+                            if resp.status_code in RETRY_STATUS and attempt < self.stream_retries:
+                                delay = _retry_after(resp) or 2.0 * 2**attempt
+                                await asyncio.sleep(min(30.0, max(1.0, delay)))
+                                continue
+                            msg = raw
+                            with contextlib.suppress(Exception):
+                                msg = json.loads(raw).get("error", {}).get("message", raw)
+                            raise _model_error(
+                                self.model, resp.status_code, f"Groq error {resp.status_code}: {msg[:300]}"
+                            )
+                        async for line in resp.aiter_lines():
+                            if not line.startswith("data:"):
+                                continue
+                            payload = line[5:].strip()
+                            if payload == "[DONE]":
+                                break
+                            try:
+                                delta = json.loads(payload)["choices"][0].get("delta", {}).get("content")
+                            except (ValueError, KeyError, IndexError):
+                                continue
+                            if delta:
+                                yield delta
+                        return
+                except httpx.TransportError as exc:
+                    raise UpstreamError("Lost connection to the language model.") from exc

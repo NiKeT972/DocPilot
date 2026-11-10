@@ -279,3 +279,8 @@ def test_native_model_citation_styles_are_normalised():
         ground_citations("GPT-4 (2023) is a model (see Table 2).", valid)[0]
         == "GPT-4 (2023) is a model (see Table 2)."
     )
+
+
+def test_zero_width_characters_inside_tags_are_tolerated():
+    text, cited = ground_citations("Scaling helps [​P1]. FAISS [﻿P2] by FAIR.", {"P1", "P2"})
+    assert cited == ["P1", "P2"] and text == "Scaling helps [P1]. FAISS [P2] by FAIR."

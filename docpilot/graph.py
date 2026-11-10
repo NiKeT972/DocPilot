@@ -221,12 +221,17 @@ _SINGLE = re.compile(r"[PW]\d{1,2}")
 _ALT_TAG = re.compile(r"[【［〔(]\s*((?:[PW]\d{1,2}(?:†[^】］〕)\]]*)?\s*[,;]?\s*)+)[】］〕)]")
 
 
+_ZERO_WIDTH = re.compile("[\u200b\u200c\u200d\u2060\ufeff]")
+
+
 def normalize_citations(text: str) -> str:
     """Rewrite alternative citation brackets to the canonical [P1] form."""
 
     def repl(m: re.Match) -> str:
         return "".join(f"[{t}]" for t in _SINGLE.findall(re.sub(r"†[^,;]*", "", m.group(1))))
 
+    # Models sometimes emit invisible zero-width characters inside tags, e.g. "[\u200bP1]".
+    text = _ZERO_WIDTH.sub("", text)
     return _ALT_TAG.sub(repl, text)
 
 

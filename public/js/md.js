@@ -15,6 +15,8 @@ function inline(text) {
   // Links: [label](https://...) — only http(s); label/url already escaped.
   s = s.replace(/\[([^\]\n]{1,200})\]\((https?:\/\/[^\s)]{1,500})\)/g, (_, label, url) =>
     `<a href="${url}" target="_blank" rel="noopener noreferrer nofollow">${label}</a>`);
+  // Drop zero-width characters models sometimes put inside tags ("[\u200bP1]").
+  s = s.replace(/[\u200b\u200c\u200d\u2060\ufeff]/g, "");
   // Native model citation styles (e.g. 【P3】, 【P3†L5-L9】, ［P1］) -> [P3]
   s = s.replace(/[【［〔]\s*((?:[PW]\d{1,2}(?:†[^】］〕]*)?\s*[,;]?\s*)+)[】］〕]/g, (_, g) =>
     g.match(/[PW]\d{1,2}/g).map((t) => `[${t}]`).join(""));
